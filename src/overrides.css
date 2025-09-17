@@ -1,3 +1,7 @@
+body {
+	background-color: #292b2e;
+}
+
 button.MuiButtonBase-root {
 	line-height: normal;
 	padding-top: 8px;
