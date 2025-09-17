@@ -6,7 +6,7 @@ function App() {
 
 	return (
 		<>
-			<h1>Vite + React</h1>
+			<h1>Todo</h1>
 			<div className="card">
 				<button
 					type="button"
