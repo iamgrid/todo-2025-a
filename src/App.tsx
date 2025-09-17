@@ -8,13 +8,12 @@ import { ThemeProvider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import customTheme from "./customTheme.ts";
 
-const StyledDiv = styled("div")({
-	backgroundColor: "white",
-	padding: 16,
-	marginTop: 16,
-	borderRadius: 8,
+const MainWrapper = styled("div")(({ theme }) => ({
+	backgroundColor: theme.palette.background.paper,
+	padding: theme.spacing(3),
+	borderRadius: theme.shape.borderRadius,
 	boxShadow: "0 0 5px 3px rgba(80, 116, 152, .7)",
-});
+}));
 
 function App() {
 	const [count, setCount] = useState(0);
@@ -22,7 +21,7 @@ function App() {
 	return (
 		<ThemeProvider theme={customTheme}>
 			<Container maxWidth="md">
-				<StyledDiv>
+				<MainWrapper>
 					<Typography
 						variant="h2"
 						sx={{ mb: 2 }}
@@ -37,7 +36,7 @@ function App() {
 					>
 						count is {count}
 					</Button>
-				</StyledDiv>
+				</MainWrapper>
 			</Container>
 		</ThemeProvider>
 	);
