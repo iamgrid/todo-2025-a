@@ -335,11 +335,17 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					typeof parsedTodo.isCompleted !== "boolean" ||
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-					typeof parsedTodo.createdAt !== "string" ||
+					(typeof parsedTodo.createdAt !== "string" &&
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+						parsedTodo.createdAt !== null) ||
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-					typeof parsedTodo.lastUpdatedAt !== "string" ||
+					(typeof parsedTodo.lastUpdatedAt !== "string" &&
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+						parsedTodo.lastUpdatedAt !== null) ||
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-					typeof parsedTodo.completedAt !== "string"
+					(typeof parsedTodo.completedAt !== "string" &&
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+						parsedTodo.completedAt !== null)
 				) {
 					console.error(
 						functionSignature,
@@ -372,5 +378,10 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 		}
 	});
 
-	return todos.length > 0 ? todos : null;
+	if (todos.length === 0) {
+		return null;
+	} else {
+		const todosSortedById = [...todos].sort((a, b) => a.id - b.id);
+		return todosSortedById;
+	}
 }
