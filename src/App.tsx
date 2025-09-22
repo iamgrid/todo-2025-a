@@ -5,16 +5,20 @@ import {
 	getAllTodoObjectsFromLocalStorage,
 	TTodoStoreActionTypes,
 } from "./todoStore";
+
 import Container from "@mui/material/Container";
 // import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import "./overrides.css";
+
 import { ThemeProvider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import customTheme from "./customTheme.ts";
+
 import TodoList from "./components/TodoList/TodoList.tsx";
+
+import "./overrides.css";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
