@@ -176,7 +176,7 @@ export function todoStoreReducer(
 		default: {
 			console.error(
 				functionSignature,
-				// @ts-expect-error Belt and suspenders.
+				// @ts-expect-error TS2339 - Property 'type' does not exist on type 'never'.
 				`Unknown action type: ${action.type}`
 			);
 			return state;
@@ -264,4 +264,113 @@ function updateLocalStorage(
 			);
 			break;
 	}
+}
+
+export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
+	const functionSignature =
+		"todoStore.ts@getAllTodoObjectsFromLocalStorage()";
+
+	const keysInLocalStorage = Object.keys(localStorage);
+
+	if (keysInLocalStorage.length === 0) {
+		console.info(
+			functionSignature,
+			"No keys found in localStorage. Returning null."
+		);
+		return null;
+	}
+
+	const todos: TTodo[] = [];
+
+	keysInLocalStorage.forEach((key) => {
+		if (key.startsWith(TODO_KEY_PREFIX)) {
+			const lsItem = localStorage.getItem(key);
+			if (typeof lsItem !== "string" || lsItem === null) {
+				console.error(
+					functionSignature,
+					`lsItem is not a string or is null. Skipping...`,
+					lsItem
+				);
+
+				return;
+			}
+
+			let newTodo: TTodo | null = null;
+			try {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				const parsedTodo = JSON.parse(lsItem);
+
+				if (!(parsedTodo instanceof Object) || parsedTodo === null) {
+					console.error(
+						functionSignature,
+						`The item in localStorage for key ${key} is not an object. Skipping...`,
+						parsedTodo
+					);
+					return;
+				}
+
+				// Check for required properties
+				if (
+					!("id" in parsedTodo) ||
+					!("text" in parsedTodo) ||
+					!("isCompleted" in parsedTodo) ||
+					!("createdAt" in parsedTodo) ||
+					!("lastUpdatedAt" in parsedTodo) ||
+					!("completedAt" in parsedTodo)
+				) {
+					console.error(
+						functionSignature,
+						`The item in localStorage for key ${key} is missing one or more required properties. Skipping...`,
+						parsedTodo
+					);
+					return;
+				}
+
+				// Type checks
+				if (
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					typeof parsedTodo.id !== "number" ||
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					typeof parsedTodo.text !== "string" ||
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					typeof parsedTodo.isCompleted !== "boolean" ||
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					typeof parsedTodo.createdAt !== "string" ||
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					typeof parsedTodo.lastUpdatedAt !== "string" ||
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					typeof parsedTodo.completedAt !== "string"
+				) {
+					console.error(
+						functionSignature,
+						`The item in localStorage for key ${key} does not have the correct types. Skipping...`,
+						parsedTodo
+					);
+					return;
+				}
+
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				newTodo = parsedTodo;
+			} catch (errorObj) {
+				console.error(
+					functionSignature,
+					`Could not parse JSON from localStorage for key ${key}:`,
+					errorObj
+				);
+				return;
+			}
+
+			if (newTodo === null) {
+				console.error(
+					functionSignature,
+					"newTodo is null. Skipping..."
+				);
+				return;
+			}
+
+			todos.push(newTodo);
+		}
+	});
+
+	return todos.length > 0 ? todos : null;
 }
