@@ -1,27 +1,75 @@
+import { useState } from "react";
 import type { TTodo } from "../../todoStore";
 import List from "@mui/material/List";
 import TodoListItem from "../TodoList/TodoListItem.tsx";
+import AlertDialog from "../shared/AlertDialog.tsx";
 
 export interface TTodoListProps {
 	todos: TTodo[];
 	handleToggleTodoCompletion(todoId: number, newStatus: boolean): void;
+	handleDeleteTodo(todoId: number): void;
 }
 
 export default function TodoList({
 	todos,
 	handleToggleTodoCompletion,
+	handleDeleteTodo,
 }: TTodoListProps) {
+	const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>(false);
+	const [todoIdToDelete, setTodoIdToDelete] = useState<number | null>(null);
+
+	function handleDeleteTodoProper(todoId: number) {
+		setIsAlertDialogOpen(true);
+		setTodoIdToDelete(todoId);
+	}
+
 	return (
-		<List>
-			{todos.map((todo) => {
-				return (
-					<TodoListItem
-						key={todo.id}
-						todo={todo}
-						handleToggleTodoCompletion={handleToggleTodoCompletion}
-					/>
-				);
-			})}
-		</List>
+		<>
+			<List>
+				{todos.map((todo) => {
+					return (
+						<TodoListItem
+							key={todo.id}
+							todo={todo}
+							handleToggleTodoCompletion={
+								handleToggleTodoCompletion
+							}
+							handleDeleteTodoProper={handleDeleteTodoProper}
+						/>
+					);
+				})}
+			</List>
+			<AlertDialog
+				isOpen={isAlertDialogOpen}
+				description={
+					<>
+						<span>You are about to delete the following todo:</span>
+						<br />
+						<span style={{ fontWeight: "bold" }}>
+							{todoIdToDelete !== null &&
+								todos.find((todo) => todo.id === todoIdToDelete)
+									?.text}
+						</span>
+					</>
+				}
+				confirmButtonText="Delete Todo"
+				confirmButtonColor="error"
+				handleCancel={() => setIsAlertDialogOpen(false)}
+				handleConfirm={() => {
+					const functionSignature = "TodoList.tsx@handleConfirm()";
+					if (todoIdToDelete !== null) {
+						handleDeleteTodo(todoIdToDelete);
+						setTodoIdToDelete(null);
+					} else {
+						console.error(
+							functionSignature,
+							"todoIdToDelete is null"
+						);
+					}
+
+					setIsAlertDialogOpen(false);
+				}}
+			/>
+		</>
 	);
 }

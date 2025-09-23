@@ -92,7 +92,7 @@ export function friendlyDate(input: string | Date): string {
 		ts < zerohourToday &&
 		ts >= zerohourToday - 24 * 60 * 60
 	) {
-		reply = "yesterday (" + strDate + ")";
+		reply = "Yesterday (" + strDate + ")";
 	} else {
 		reply = strDate;
 		if (diffInDays <= maxDayDifferenceToShow) {
@@ -101,21 +101,4 @@ export function friendlyDate(input: string | Date): string {
 	}
 
 	return reply;
-}
-
-export function friendlyDisplayDate(input: string | Date): React.ReactNode {
-	const inputDateObj = input instanceof Date ? input : new Date(input);
-
-	if (isNaN(inputDateObj.getTime())) {
-		return "[invalid date]";
-	} else {
-		const titleString = inputDateObj.toLocaleString("en-US", {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-		return <span title={titleString}>{friendlyDate(input)}</span>;
-	}
 }

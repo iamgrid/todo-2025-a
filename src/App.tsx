@@ -118,6 +118,13 @@ function App() {
 		});
 	}
 
+	function handleDeleteTodo(todoId: number) {
+		todoStoreDispatch({
+			type: TTodoStoreActionTypes.DELETE_TODO,
+			payload: { deleteTodoWithId: todoId },
+		});
+	}
+
 	return (
 		<ThemeProvider theme={customTheme}>
 			<Container maxWidth="md">
@@ -158,6 +165,7 @@ function App() {
 					<TodoList
 						todos={todoStoreState.todos}
 						handleToggleTodoCompletion={handleToggleTodoCompletion}
+						handleDeleteTodo={handleDeleteTodo}
 					/>
 				</MainWrapper>
 			</Container>

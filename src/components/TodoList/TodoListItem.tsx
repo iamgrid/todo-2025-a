@@ -1,13 +1,18 @@
 import type { TTodo } from "../../todoStore";
+
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { friendlyDisplayDate } from "../../helpers";
+
+// import { friendlyDisplayDate } from "../../helpers";
+import FriendlyDate from "../shared/FriendlyDate.tsx";
 
 import { styled } from "@mui/material/styles";
 
@@ -22,30 +27,43 @@ const TodoItemTitle = styled("span")<{ isCompleted: boolean }>(
 export interface TTodoListItemProps {
 	todo: TTodo;
 	handleToggleTodoCompletion(todoId: number, newStatus: boolean): void;
+	handleDeleteTodoProper(todoId: number): void;
 }
 
 export default function TodoListItem({
 	todo,
 	handleToggleTodoCompletion,
+	handleDeleteTodoProper,
 }: TTodoListItemProps) {
+	function handleEditTodo() {
+		const functionSignature = "TodoListItem.tsx@handleEditTodo()";
+		console.log(functionSignature, "Editing todo:", todo);
+	}
+
 	function renderSecondaryText() {
 		const parts: React.ReactNode[] = [];
 
 		if (todo.completedAt !== null) {
 			parts.push(
-				<span>Completed {friendlyDisplayDate(todo.completedAt)}</span>
+				<span>
+					Completed <FriendlyDate input={todo.completedAt} />
+				</span>
 			);
 		}
 
 		if (todo.lastUpdatedAt !== null) {
 			parts.push(
 				<span>
-					Last updated {friendlyDisplayDate(todo.lastUpdatedAt)}
+					Last updated <FriendlyDate input={todo.lastUpdatedAt} />
 				</span>
 			);
 		}
 
-		parts.push(<span>Created {friendlyDisplayDate(todo.createdAt)}</span>);
+		parts.push(
+			<span>
+				Created <FriendlyDate input={todo.createdAt} />
+			</span>
+		);
 
 		return (
 			<span>
@@ -60,6 +78,8 @@ export default function TodoListItem({
 		);
 	}
 
+	const labelId = `todo-item-label-${todo.id}`;
+
 	return (
 		<ListItem
 			key={todo.id}
@@ -68,17 +88,13 @@ export default function TodoListItem({
 					? "todo-list-item todo-list-item--completed"
 					: "todo-list-item"
 			}
+			dense
 		>
 			<ListItemButton
 				role={undefined}
 				onClick={() => {
 					handleToggleTodoCompletion(todo.id, !todo.isCompleted);
 				}}
-				title={
-					todo.isCompleted
-						? "Click to mark this todo as incomplete"
-						: "Click to complete this todo"
-				}
 				dense
 			>
 				<ListItemIcon>
@@ -87,12 +103,12 @@ export default function TodoListItem({
 						tabIndex={-1}
 						checked={todo.isCompleted}
 						slotProps={{
-							input: { "aria-labelledby": String(todo.id) },
+							input: { "aria-labelledby": labelId },
 						}}
 					/>
 				</ListItemIcon>
 				<ListItemText
-					id={String(todo.id)}
+					id={labelId}
 					primary={
 						<TodoItemTitle isCompleted={todo.isCompleted}>
 							{todo.text}
@@ -100,16 +116,30 @@ export default function TodoListItem({
 					}
 					secondary={<span>{renderSecondaryText()}</span>}
 				/>
-				<IconButton edge="end" aria-label="edit" title="Edit this todo">
-					<EditIcon />
-				</IconButton>
-				<IconButton
-					edge="end"
-					aria-label="delete"
-					title="Delete this todo"
-				>
-					<DeleteIcon />
-				</IconButton>
+				<Tooltip title="Edit this todo" placement="top" arrow>
+					<IconButton
+						edge="end"
+						aria-label="edit"
+						onClick={(event) => {
+							event.stopPropagation();
+							handleEditTodo();
+						}}
+					>
+						<EditIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip title="Delete this todo" placement="top" arrow>
+					<IconButton
+						edge="end"
+						aria-label="delete"
+						onClick={(event) => {
+							event.stopPropagation();
+							handleDeleteTodoProper(todo.id);
+						}}
+					>
+						<DeleteIcon />
+					</IconButton>
+				</Tooltip>
 			</ListItemButton>
 		</ListItem>
 	);
