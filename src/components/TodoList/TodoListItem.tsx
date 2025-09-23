@@ -45,24 +45,24 @@ export default function TodoListItem({
 
 		if (todo.completedAt !== null) {
 			parts.push(
-				<span>
+				<>
 					Completed <FriendlyDate input={todo.completedAt} />
-				</span>
+				</>
 			);
 		}
 
 		if (todo.lastUpdatedAt !== null) {
 			parts.push(
-				<span>
+				<>
 					Last updated <FriendlyDate input={todo.lastUpdatedAt} />
-				</span>
+				</>
 			);
 		}
 
 		parts.push(
-			<span>
+			<>
 				Created <FriendlyDate input={todo.createdAt} />
-			</span>
+			</>
 		);
 
 		return (
