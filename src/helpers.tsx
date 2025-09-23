@@ -92,7 +92,7 @@ export function friendlyDate(input: string | Date): string {
 		ts < zerohourToday &&
 		ts >= zerohourToday - 24 * 60 * 60
 	) {
-		reply = "Yesterday (" + strDate + ")";
+		reply = "yesterday (" + strDate + ")";
 	} else {
 		reply = strDate;
 		if (diffInDays <= maxDayDifferenceToShow) {
