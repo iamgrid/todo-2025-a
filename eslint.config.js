@@ -29,5 +29,9 @@ export default tseslint.config([
 			ecmaVersion: 2020,
 			globals: globals.browser,
 		},
+		rules: {
+			"@typescript-eslint/unbound-method": "off",
+			"@typescript-eslint/no-unsafe-member-access": "off",
+		},
 	},
 ]);

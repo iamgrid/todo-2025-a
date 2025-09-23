@@ -14,3 +14,7 @@ button.MuiButtonBase-root {
 	line-height: normal;
 	padding-top: 8px;
 }
+
+.todo-list-item--completed .MuiListItemText-secondary {
+	color: #e0e0e0;
+}

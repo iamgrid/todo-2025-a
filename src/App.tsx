@@ -8,9 +8,10 @@ import {
 
 import Container from "@mui/material/Container";
 // import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+// import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import AddIcon from "@mui/icons-material/Add";
 
 import { ThemeProvider } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -107,17 +108,20 @@ function App() {
 		focusNewTodoInputField();
 	}
 
+	function handleToggleTodoCompletion(todoId: number, newStatus: boolean) {
+		todoStoreDispatch({
+			type: TTodoStoreActionTypes.UPDATE_TODO_COMPLETION_STATUS,
+			payload: {
+				updateTodoWithId: todoId,
+				newCompletionStatus: newStatus,
+			},
+		});
+	}
+
 	return (
 		<ThemeProvider theme={customTheme}>
 			<Container maxWidth="md">
 				<MainWrapper>
-					<Typography
-						variant="h2"
-						sx={{ mb: 2 }}
-						color="text.primary"
-					>
-						Todo
-					</Typography>
 					<form
 						className="new-todo-form"
 						noValidate
@@ -146,11 +150,15 @@ function App() {
 							color="primary"
 							type="submit"
 							sx={{ mt: 2 }}
+							startIcon={<AddIcon />}
 						>
 							Add
 						</Button>
 					</form>
-					<TodoList todos={todoStoreState.todos} />
+					<TodoList
+						todos={todoStoreState.todos}
+						handleToggleTodoCompletion={handleToggleTodoCompletion}
+					/>
 				</MainWrapper>
 			</Container>
 		</ThemeProvider>

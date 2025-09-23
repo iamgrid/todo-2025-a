@@ -328,23 +328,14 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 
 				// Type checks
 				if (
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					typeof parsedTodo.id !== "number" ||
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					typeof parsedTodo.text !== "string" ||
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					typeof parsedTodo.isCompleted !== "boolean" ||
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					(typeof parsedTodo.createdAt !== "string" &&
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 						parsedTodo.createdAt !== null) ||
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					(typeof parsedTodo.lastUpdatedAt !== "string" &&
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 						parsedTodo.lastUpdatedAt !== null) ||
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					(typeof parsedTodo.completedAt !== "string" &&
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 						parsedTodo.completedAt !== null)
 				) {
 					console.error(
@@ -381,7 +372,7 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 	if (todos.length === 0) {
 		return null;
 	} else {
-		const todosSortedById = [...todos].sort((a, b) => a.id - b.id);
+		const todosSortedById = [...todos].sort((a, b) => b.id - a.id);
 		return todosSortedById;
 	}
 }
