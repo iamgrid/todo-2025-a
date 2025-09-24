@@ -36,7 +36,7 @@ export type TTodoStoreAction =
 			type: typeof TTodoStoreActionTypes.UPDATE_TODO_TEXT_CONTENT;
 			payload: {
 				updateTodoWithId: number;
-				text: string;
+				newText: string;
 			};
 	  }
 	| {
@@ -103,7 +103,7 @@ export function todoStoreReducer(
 				return state;
 			}
 
-			updatedTodoObj.text = action.payload.text;
+			updatedTodoObj.text = action.payload.newText;
 			updatedTodoObj.lastUpdatedAt = nowIsoString;
 
 			const newState = {

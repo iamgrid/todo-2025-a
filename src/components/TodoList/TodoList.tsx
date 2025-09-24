@@ -8,19 +8,38 @@ export interface TTodoListProps {
 	todos: TTodo[];
 	handleToggleTodoCompletion(todoId: number, newStatus: boolean): void;
 	handleDeleteTodo(todoId: number): void;
+	handleEditedTodoSubmission(editedTodoId: number, newText: string): void;
 }
 
 export default function TodoList({
 	todos,
 	handleToggleTodoCompletion,
 	handleDeleteTodo,
+	handleEditedTodoSubmission,
 }: TTodoListProps) {
 	const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>(false);
 	const [todoIdToDelete, setTodoIdToDelete] = useState<number | null>(null);
+	const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
 
 	function handleDeleteTodoProper(todoId: number) {
 		setIsAlertDialogOpen(true);
 		setTodoIdToDelete(todoId);
+	}
+
+	function handleEditTodo(editedTodoId: number): void {
+		setEditingTodoId(editedTodoId);
+	}
+
+	function handleEditedTodoSubmissionProper(
+		editedTodoId: number,
+		newText: string
+	): void {
+		handleEditedTodoSubmission(editedTodoId, newText);
+		setEditingTodoId(null);
+	}
+
+	function handleCancelEditing(): void {
+		setEditingTodoId(null);
 	}
 
 	return (
@@ -35,6 +54,12 @@ export default function TodoList({
 								handleToggleTodoCompletion
 							}
 							handleDeleteTodoProper={handleDeleteTodoProper}
+							isTodoBeingEdited={editingTodoId === todo.id}
+							handleEditTodo={handleEditTodo}
+							handleEditedTodoSubmissionProper={
+								handleEditedTodoSubmissionProper
+							}
+							handleCancelEditing={handleCancelEditing}
 						/>
 					);
 				})}

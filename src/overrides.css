@@ -18,3 +18,11 @@ button.MuiButtonBase-root {
 .todo-list-item--completed .MuiListItemText-secondary {
 	color: #e0e0e0;
 }
+
+.todo-list-item--completed button svg {
+	opacity: 0.3;
+}
+
+.todo-list-item--completed button:hover svg {
+	opacity: 1;
+}

@@ -125,6 +125,13 @@ function App() {
 		});
 	}
 
+	function handleEditedTodoSubmission(editedTodoId: number, newText: string) {
+		todoStoreDispatch({
+			type: TTodoStoreActionTypes.UPDATE_TODO_TEXT_CONTENT,
+			payload: { updateTodoWithId: editedTodoId, newText },
+		});
+	}
+
 	return (
 		<ThemeProvider theme={customTheme}>
 			<Container maxWidth="md">
@@ -166,6 +173,7 @@ function App() {
 						todos={todoStoreState.todos}
 						handleToggleTodoCompletion={handleToggleTodoCompletion}
 						handleDeleteTodo={handleDeleteTodo}
+						handleEditedTodoSubmission={handleEditedTodoSubmission}
 					/>
 				</MainWrapper>
 			</Container>
