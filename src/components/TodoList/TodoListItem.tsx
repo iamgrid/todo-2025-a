@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { TTodo } from "../../todoStore";
 
 import ListItem from "@mui/material/ListItem";
@@ -19,7 +20,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import FriendlyDate from "../shared/FriendlyDate.tsx";
 
 import { styled } from "@mui/material/styles";
-import { MAX_TODO_TITLE_LENGTH } from "../../helpers.tsx";
+import {
+	MAX_TODO_TITLE_LENGTH,
+	TODO_TITLE_LENGTH_ERROR_MESSAGE,
+} from "../../helpers.tsx";
 
 const TodoItemTitle = styled("span")<{ isCompleted: boolean }>(
 	({ isCompleted }) => ({
@@ -33,7 +37,7 @@ const EditTodoForm = styled("form")({
 	display: "grid",
 	gridTemplateColumns: "1fr auto auto",
 	// gap: "8px",
-	alignItems: "center",
+	alignItems: "start",
 	width: "100%",
 });
 
@@ -59,9 +63,21 @@ export default function TodoListItem({
 	handleEditedTodoSubmissionProper,
 	handleCancelEditing,
 }: TTodoListItemProps) {
+	const [editTodoInputIsValid, setEditTodoInputIsValid] =
+		useState<boolean>(true);
+	const [
+		editTodoInputValueIsOverMaxLengthBy,
+		setEditTodoInputValueIsOverMaxLengthBy,
+	] = useState<number>(0);
+
 	function handleEditFormSubmit(event: React.FormEvent<HTMLFormElement>) {
 		const functionSignature = "TodoListItem.tsx@handleEditFormSubmit()";
 		event.preventDefault();
+
+		if (!editTodoInputIsValid) {
+			return;
+		}
+
 		const inputEl = document.getElementById(
 			`edit-todo-input-${todo.id}`
 		) as HTMLInputElement;
@@ -199,20 +215,43 @@ export default function TodoListItem({
 								"aria-label": "Edit todo text",
 								sx: { padding: "1px 1px" },
 							},
-							htmlInput: {
-								maxLength: MAX_TODO_TITLE_LENGTH,
-							},
 						}}
 						label="Edit Todo"
 						size="small"
 						sx={{ my: 1 }}
+						error={!editTodoInputIsValid}
+						helperText={
+							!editTodoInputIsValid
+								? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${editTodoInputValueIsOverMaxLengthBy} characters.)`
+								: ""
+						}
+						onChange={(event) => {
+							const val = event.target.value.trim();
+							if (
+								val.length === 0 ||
+								val.length > MAX_TODO_TITLE_LENGTH
+							) {
+								setEditTodoInputIsValid(false);
+								if (val.length > MAX_TODO_TITLE_LENGTH) {
+									setEditTodoInputValueIsOverMaxLengthBy(
+										val.length - MAX_TODO_TITLE_LENGTH
+									);
+								} else {
+									setEditTodoInputValueIsOverMaxLengthBy(0);
+								}
+							} else {
+								setEditTodoInputIsValid(true);
+								setEditTodoInputValueIsOverMaxLengthBy(0);
+							}
+						}}
 					/>
 					<Button
 						type="submit"
 						variant="contained"
 						color="primary"
 						startIcon={<SaveIcon />}
-						sx={{ ml: 2 }}
+						sx={{ ml: 2, mt: "12px" }}
+						disabled={!editTodoInputIsValid}
 					>
 						Save
 					</Button>
@@ -220,7 +259,7 @@ export default function TodoListItem({
 						variant="outlined"
 						color="primary"
 						startIcon={<CancelIcon />}
-						sx={{ ml: 1 }}
+						sx={{ ml: 1, mt: "12px" }}
 						onClick={() => {
 							handleCancelEditing();
 						}}

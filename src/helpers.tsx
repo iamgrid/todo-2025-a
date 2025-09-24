@@ -1,5 +1,6 @@
 export const TODO_KEY_PREFIX = "todo_";
 export const MAX_TODO_TITLE_LENGTH = 500;
+export const TODO_TITLE_LENGTH_ERROR_MESSAGE = `A todo title should be at least 1, and at most ${MAX_TODO_TITLE_LENGTH} characters long.`;
 
 export function sum(a: number, b: number): number {
 	const re: number = a + b;

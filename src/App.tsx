@@ -20,6 +20,10 @@ import customTheme from "./customTheme.ts";
 import TodoList from "./components/TodoList/TodoList.tsx";
 
 import "./overrides.css";
+import {
+	MAX_TODO_TITLE_LENGTH,
+	TODO_TITLE_LENGTH_ERROR_MESSAGE,
+} from "./helpers.tsx";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
@@ -36,6 +40,11 @@ function App() {
 
 	const [newTodoFieldContents, setNewTodoFieldContents] =
 		useState<string>("");
+	const [todoInputIsValid, setTodoInputIsValid] = useState<boolean>(true);
+	const [
+		todoInputValueIsOverMaxLengthBy,
+		setTodoInputValueIsOverMaxLengthBy,
+	] = useState<number>(0);
 
 	useEffect(() => {
 		const functionSignature = "App.tsx@component mounted useEffect()";
@@ -79,12 +88,36 @@ function App() {
 		}
 	}
 
+	function handleTodoInputChange(newValue: string) {
+		setNewTodoFieldContents(newValue.trimStart());
+
+		const trimmedValue = newValue.trim();
+		if (trimmedValue.length === 0) {
+			setTodoInputIsValid(false);
+			setTodoInputValueIsOverMaxLengthBy(0);
+			return;
+		} else if (trimmedValue.length > MAX_TODO_TITLE_LENGTH) {
+			setTodoInputIsValid(false);
+			setTodoInputValueIsOverMaxLengthBy(
+				trimmedValue.length - MAX_TODO_TITLE_LENGTH
+			);
+			return;
+		} else {
+			setTodoInputIsValid(true);
+			setTodoInputValueIsOverMaxLengthBy(0);
+		}
+	}
+
 	function handleNewTodoFormSubmission(
 		event: React.FormEvent<HTMLFormElement>
 	) {
 		const functionSignature = "App.tsx@handleNewTodoFormSubmission()";
 
 		event.preventDefault();
+
+		if (!todoInputIsValid) {
+			return;
+		}
 
 		// console.log(functionSignature, "Form submitted:", event);
 
@@ -104,6 +137,8 @@ function App() {
 		});
 
 		setNewTodoFieldContents("");
+		setTodoInputIsValid(true);
+		setTodoInputValueIsOverMaxLengthBy(0);
 
 		focusNewTodoInputField();
 	}
@@ -154,9 +189,15 @@ function App() {
 							autoFocus
 							value={newTodoFieldContents}
 							onChange={(event) =>
-								setNewTodoFieldContents(
+								handleTodoInputChange(
 									event.target.value.trimStart()
 								)
+							}
+							error={!todoInputIsValid}
+							helperText={
+								!todoInputIsValid
+									? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
+									: ""
 							}
 						/>
 						<Button
@@ -165,6 +206,7 @@ function App() {
 							type="submit"
 							sx={{ mt: 2 }}
 							startIcon={<AddIcon />}
+							disabled={!todoInputIsValid}
 						>
 							Add
 						</Button>
