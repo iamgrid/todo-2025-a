@@ -32,14 +32,20 @@ const MainWrapper = styled("div")(({ theme }) => ({
 	boxShadow: "0 0 5px 3px rgba(80, 116, 152, .7)",
 }));
 
+const AddTodoForm = styled("form")({
+	display: "grid",
+	gridTemplateColumns: "1fr auto",
+	gap: "16px",
+	alignItems: "start",
+	width: "100%",
+});
+
 function App() {
 	const [todoStoreState, todoStoreDispatch] = useReducer(
 		todoStoreReducer,
 		initialTodoStoreState
 	);
 
-	const [newTodoFieldContents, setNewTodoFieldContents] =
-		useState<string>("");
 	const [todoInputIsValid, setTodoInputIsValid] = useState<boolean>(true);
 	const [
 		todoInputValueIsOverMaxLengthBy,
@@ -76,7 +82,7 @@ function App() {
 		const functionSignature = "App.tsx@focusNewTodoInputField()";
 
 		const newTodoInputField = document.getElementById(
-			"new-todo-form__input-field"
+			"new-todo-form__input"
 		) as HTMLInputElement | null;
 		if (newTodoInputField !== null) {
 			newTodoInputField.focus();
@@ -89,8 +95,6 @@ function App() {
 	}
 
 	function handleTodoInputChange(newValue: string) {
-		setNewTodoFieldContents(newValue.trimStart());
-
 		const trimmedValue = newValue.trim();
 		if (trimmedValue.length === 0) {
 			setTodoInputIsValid(false);
@@ -109,19 +113,31 @@ function App() {
 	}
 
 	function handleNewTodoFormSubmission(
-		event: React.FormEvent<HTMLFormElement>
+		event: React.FormEvent<HTMLFormElement> | null = null
 	) {
 		const functionSignature = "App.tsx@handleNewTodoFormSubmission()";
 
-		event.preventDefault();
+		if (event !== null) {
+			event.preventDefault();
+		}
 
 		if (!todoInputIsValid) {
 			return;
 		}
 
-		// console.log(functionSignature, "Form submitted:", event);
+		const newTodoField = document.getElementById(
+			"new-todo-form__input"
+		) as HTMLInputElement | null;
+		if (newTodoField === null) {
+			console.error(
+				functionSignature,
+				"Could not find new todo input field in the DOM!"
+			);
+			return;
+		}
 
-		const newTodoText = newTodoFieldContents.trim();
+		const newTodoText = newTodoField.value.trim();
+
 		if (newTodoText.length === 0) {
 			console.warn(
 				functionSignature,
@@ -136,7 +152,7 @@ function App() {
 			payload: { text: newTodoText },
 		});
 
-		setNewTodoFieldContents("");
+		newTodoField.value = "";
 		setTodoInputIsValid(true);
 		setTodoInputValueIsOverMaxLengthBy(0);
 
@@ -171,7 +187,7 @@ function App() {
 		<ThemeProvider theme={customTheme}>
 			<Container maxWidth="md">
 				<MainWrapper>
-					<form
+					<AddTodoForm
 						className="new-todo-form"
 						noValidate
 						autoComplete="off"
@@ -180,18 +196,15 @@ function App() {
 						}}
 					>
 						<TextField
-							id="new-todo-form__input-field"
+							id="new-todo-form__input"
 							label="Add New Todo"
 							variant="outlined"
 							fullWidth
 							margin="normal"
 							placeholder="What needs to be done?"
 							autoFocus
-							value={newTodoFieldContents}
 							onChange={(event) =>
-								handleTodoInputChange(
-									event.target.value.trimStart()
-								)
+								handleTodoInputChange(event.target.value)
 							}
 							error={!todoInputIsValid}
 							helperText={
@@ -199,18 +212,27 @@ function App() {
 									? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
 									: ""
 							}
+							multiline={true}
+							minRows={1}
+							maxRows={4}
+							onKeyDown={(event) => {
+								if (event.key === "Enter") {
+									event.preventDefault();
+									handleNewTodoFormSubmission();
+								}
+							}}
 						/>
 						<Button
 							variant="contained"
 							color="primary"
 							type="submit"
-							sx={{ mt: 2 }}
+							sx={{ mt: 3, height: "40px" }}
 							startIcon={<AddIcon />}
 							disabled={!todoInputIsValid}
 						>
 							Add
 						</Button>
-					</form>
+					</AddTodoForm>
 					<TodoList
 						todos={todoStoreState.todos}
 						handleToggleTodoCompletion={handleToggleTodoCompletion}

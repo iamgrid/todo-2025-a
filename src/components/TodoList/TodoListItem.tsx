@@ -70,16 +70,20 @@ export default function TodoListItem({
 		setEditTodoInputValueIsOverMaxLengthBy,
 	] = useState<number>(0);
 
-	function handleEditFormSubmit(event: React.FormEvent<HTMLFormElement>) {
+	function handleEditFormSubmit(
+		event: React.FormEvent<HTMLFormElement> | null = null
+	) {
 		const functionSignature = "TodoListItem.tsx@handleEditFormSubmit()";
-		event.preventDefault();
+		if (event !== null) {
+			event.preventDefault();
+		}
 
 		if (!editTodoInputIsValid) {
 			return;
 		}
 
 		const inputEl = document.getElementById(
-			`edit-todo-input-${todo.id}`
+			`edit-todo-form__input-${todo.id}`
 		) as HTMLInputElement;
 		if (inputEl) {
 			const newText = inputEl.value.trim();
@@ -209,11 +213,10 @@ export default function TodoListItem({
 						variant="outlined"
 						defaultValue={todo.text}
 						autoFocus
-						id={`edit-todo-input-${todo.id}`}
+						id={`edit-todo-form__input-${todo.id}`}
 						slotProps={{
 							input: {
-								"aria-label": "Edit todo text",
-								sx: { padding: "1px 1px" },
+								"aria-label": "Edit Todo",
 							},
 						}}
 						label="Edit Todo"
@@ -242,6 +245,15 @@ export default function TodoListItem({
 							} else {
 								setEditTodoInputIsValid(true);
 								setEditTodoInputValueIsOverMaxLengthBy(0);
+							}
+						}}
+						multiline={true}
+						minRows={1}
+						maxRows={4}
+						onKeyDown={(event) => {
+							if (event.key === "Enter") {
+								event.preventDefault();
+								handleEditFormSubmit();
 							}
 						}}
 					/>
