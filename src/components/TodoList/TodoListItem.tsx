@@ -19,6 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import FriendlyDate from "../shared/FriendlyDate.tsx";
 
 import { styled } from "@mui/material/styles";
+import { MAX_TODO_TITLE_LENGTH } from "../../helpers.tsx";
 
 const TodoItemTitle = styled("span")<{ isCompleted: boolean }>(
 	({ isCompleted }) => ({
@@ -197,6 +198,9 @@ export default function TodoListItem({
 							input: {
 								"aria-label": "Edit todo text",
 								sx: { padding: "1px 1px" },
+							},
+							htmlInput: {
+								maxLength: MAX_TODO_TITLE_LENGTH,
 							},
 						}}
 						label="Edit Todo"

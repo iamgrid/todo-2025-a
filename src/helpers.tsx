@@ -1,4 +1,5 @@
 export const TODO_KEY_PREFIX = "todo_";
+export const MAX_TODO_TITLE_LENGTH = 500;
 
 export function sum(a: number, b: number): number {
 	const re: number = a + b;
@@ -101,4 +102,34 @@ export function friendlyDate(input: string | Date): string {
 	}
 
 	return reply;
+}
+
+export function shortenPhrase(
+	input: string | false | null | undefined,
+	maxLength: number,
+	addDots: boolean = true,
+	cutWords: boolean = false
+): string {
+	if (typeof input === "undefined" || input === false || input === null) {
+		return "-";
+	}
+	if (input.length < maxLength) return input;
+
+	let rawShortStr1 = input.substring(0, maxLength);
+	if (addDots) {
+		rawShortStr1 = input.substring(0, maxLength - 4);
+	}
+
+	if (cutWords) return `${rawShortStr1}${addDots ? "..." : ""}`;
+
+	let rawShortStr2 = rawShortStr1.substring(0, rawShortStr1.lastIndexOf(" "));
+	if (rawShortStr2.length === 0) {
+		rawShortStr2 = input.substring(0, maxLength);
+	}
+
+	if (addDots) {
+		return `${rawShortStr2} ...`;
+	} else {
+		return rawShortStr2;
+	}
 }

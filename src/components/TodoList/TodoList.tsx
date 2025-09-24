@@ -3,6 +3,7 @@ import type { TTodo } from "../../todoStore";
 import List from "@mui/material/List";
 import TodoListItem from "../TodoList/TodoListItem.tsx";
 import AlertDialog from "../shared/AlertDialog.tsx";
+import { shortenPhrase } from "../../helpers.tsx";
 
 export interface TTodoListProps {
 	todos: TTodo[];
@@ -71,9 +72,13 @@ export default function TodoList({
 						<span>You are about to delete the following todo:</span>
 						<br />
 						<span style={{ fontWeight: "bold" }}>
-							{todoIdToDelete !== null &&
-								todos.find((todo) => todo.id === todoIdToDelete)
-									?.text}
+							{shortenPhrase(
+								todoIdToDelete !== null &&
+									todos.find(
+										(todo) => todo.id === todoIdToDelete
+									)?.text,
+								100
+							)}
 						</span>
 					</>
 				}
