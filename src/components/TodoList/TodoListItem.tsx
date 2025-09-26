@@ -10,16 +10,16 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+
+import { styled } from "@mui/material/styles";
+
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-// import { friendlyDisplayDate } from "../../helpers";
 import FriendlyDate from "../shared/FriendlyDate.tsx";
 
-import { styled } from "@mui/material/styles";
 import {
 	MAX_TODO_TITLE_LENGTH,
 	TODO_TITLE_LENGTH_ERROR_MESSAGE,

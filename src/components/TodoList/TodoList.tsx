@@ -1,9 +1,22 @@
-import { useState } from "react";
-import type { TTodo } from "../../todoStore";
+import { useMemo, useState } from "react";
+
 import List from "@mui/material/List";
+
+import styled from "@emotion/styled";
+
+import type { TTodo } from "../../todoStore";
+
 import TodoListItem from "../TodoList/TodoListItem.tsx";
 import AlertDialog from "../shared/AlertDialog.tsx";
-import { shortenPhrase } from "../../helpers.tsx";
+import {
+	FILTERING_OPTIONS,
+	shortenPhrase,
+	SORTING_OPTIONS,
+	type TFilteringOption,
+	type TSortingOption,
+} from "../../helpers.tsx";
+import FilterListButtons from "./FilterListButtons.tsx";
+import SortListButtons from "./SortListButtons.tsx";
 
 export interface TTodoListProps {
 	todos: TTodo[];
@@ -11,6 +24,16 @@ export interface TTodoListProps {
 	handleDeleteTodo(todoId: number): void;
 	handleEditedTodoSubmission(editedTodoId: number, newText: string): void;
 }
+
+const TopFunctionsBar = styled("div")({
+	display: "flex",
+	// break lines if there isn't enough space
+	flexWrap: "wrap",
+	alignItems: "center",
+	marginTop: "24px",
+	marginBottom: "8px",
+	gap: "16px",
+});
 
 export default function TodoList({
 	todos,
@@ -21,6 +44,67 @@ export default function TodoList({
 	const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>(false);
 	const [todoIdToDelete, setTodoIdToDelete] = useState<number | null>(null);
 	const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
+	const [currentSortingOption, setCurrentSortingOption] =
+		useState<TSortingOption>("default");
+	const [currentFilteringOption, setCurrentFilteringOption] =
+		useState<TFilteringOption>("all");
+
+	const sortedAndFilteredTodos = useMemo(() => {
+		let filteredTodos: TTodo[] = [];
+
+		if (currentFilteringOption === FILTERING_OPTIONS.all) {
+			filteredTodos.push(...todos);
+		} else {
+			filteredTodos = todos.filter((todo) => {
+				if (currentFilteringOption === FILTERING_OPTIONS.completed) {
+					return todo.isCompleted === true;
+				} else if (
+					currentFilteringOption === FILTERING_OPTIONS.incomplete
+				) {
+					return todo.isCompleted === false;
+				}
+			});
+		}
+
+		const sortedTodos: TTodo[] = [...filteredTodos];
+
+		if (currentSortingOption === SORTING_OPTIONS.default) {
+			// sort by incomplete first then by newest first
+			sortedTodos.sort((a, b) => {
+				if (a.isCompleted && !b.isCompleted) {
+					return 1;
+				} else if (!a.isCompleted && b.isCompleted) {
+					return -1;
+				} else {
+					const aDateObj = new Date(a.createdAt);
+					const bDateObj = new Date(b.createdAt);
+					return bDateObj.getTime() - aDateObj.getTime();
+				}
+			});
+		} else if (
+			currentSortingOption === SORTING_OPTIONS["date-created-desc"]
+		) {
+			sortedTodos.sort((a, b) => {
+				const aDateObj = new Date(a.createdAt);
+				const bDateObj = new Date(b.createdAt);
+				return bDateObj.getTime() - aDateObj.getTime();
+			});
+		} else if (
+			currentSortingOption === SORTING_OPTIONS["date-created-asc"]
+		) {
+			sortedTodos.sort((a, b) => {
+				const aDateObj = new Date(a.createdAt);
+				const bDateObj = new Date(b.createdAt);
+				return aDateObj.getTime() - bDateObj.getTime();
+			});
+		} else if (currentSortingOption === SORTING_OPTIONS["title-asc"]) {
+			sortedTodos.sort((a, b) => {
+				return a.text.localeCompare(b.text);
+			});
+		}
+
+		return sortedTodos;
+	}, [todos, currentSortingOption, currentFilteringOption]);
 
 	function handleDeleteTodoProper(todoId: number) {
 		setIsAlertDialogOpen(true);
@@ -45,8 +129,18 @@ export default function TodoList({
 
 	return (
 		<>
+			<TopFunctionsBar>
+				<FilterListButtons
+					currentFilteringOption={currentFilteringOption}
+					setCurrentFilteringOption={setCurrentFilteringOption}
+				/>
+				<SortListButtons
+					currentSortingOption={currentSortingOption}
+					setCurrentSortingOption={setCurrentSortingOption}
+				/>
+			</TopFunctionsBar>
 			<List>
-				{todos.map((todo) => {
+				{sortedAndFilteredTodos.map((todo) => {
 					return (
 						<TodoListItem
 							key={todo.id}

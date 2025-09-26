@@ -7,4 +7,11 @@ const customTheme = createTheme({
 	shape: { borderRadius: 8 },
 });
 
+export const buttonGroupWrapperStyle = {
+	display: "grid",
+	gridTemplateColumns: "auto auto",
+	alignItems: "center",
+	justifyContent: "start",
+};
+
 export default customTheme;

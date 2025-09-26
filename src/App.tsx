@@ -7,8 +7,7 @@ import {
 } from "./todoStore";
 
 import Container from "@mui/material/Container";
-// import Box from "@mui/material/Box";
-// import Typography from "@mui/material/Typography";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import AddIcon from "@mui/icons-material/Add";
@@ -63,6 +62,7 @@ function App() {
 			"todosFromLocalStorage:",
 			todosFromLocalStorage
 		);
+
 		if (todosFromLocalStorage !== null) {
 			console.log(
 				functionSignature,
@@ -233,12 +233,28 @@ function App() {
 							Add
 						</Button>
 					</AddTodoForm>
-					<TodoList
-						todos={todoStoreState.todos}
-						handleToggleTodoCompletion={handleToggleTodoCompletion}
-						handleDeleteTodo={handleDeleteTodo}
-						handleEditedTodoSubmission={handleEditedTodoSubmission}
-					/>
+					{todoStoreState.todos.length === 0 ? (
+						<Typography
+							// variant="h6"
+							textAlign={"center"}
+							fontStyle={"italic"}
+							color="text.secondary"
+							sx={{ mt: 4 }}
+						>
+							You have no todos yet. Add one above to get started!
+						</Typography>
+					) : (
+						<TodoList
+							todos={todoStoreState.todos}
+							handleToggleTodoCompletion={
+								handleToggleTodoCompletion
+							}
+							handleDeleteTodo={handleDeleteTodo}
+							handleEditedTodoSubmission={
+								handleEditedTodoSubmission
+							}
+						/>
+					)}
 				</MainWrapper>
 			</Container>
 		</ThemeProvider>

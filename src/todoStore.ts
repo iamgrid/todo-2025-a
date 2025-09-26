@@ -204,35 +204,26 @@ function updateLocalStorage(
 			if (!newTodo) {
 				console.error(
 					functionSignature,
-					`Could not find new todo with id ${newTodoId}`
+					action.type,
+					`Could not find new todo with id ${newTodoId} in state`
 				);
 				return;
 			}
 
-			localStorage.setItem(
-				`${TODO_KEY_PREFIX}${newTodoId}`,
-				JSON.stringify(newTodo)
-			);
-			break;
-		}
-		case TTodoStoreActionTypes.UPDATE_TODO_TEXT_CONTENT: {
-			const updatedTodo = updatedAppState.todos.find(
-				(todo) => todo.id === action.payload.updateTodoWithId
-			);
-			if (!updatedTodo) {
+			const localStorageKey = `${TODO_KEY_PREFIX}${newTodoId}`;
+
+			if (localStorage.getItem(localStorageKey) !== null) {
 				console.error(
 					functionSignature,
-					`Could not find updated todo with id ${action.payload.updateTodoWithId}`
+					action.type,
+					`localStorage already has an item with key ${localStorageKey}. Overwriting...`
 				);
-				return;
 			}
 
-			localStorage.setItem(
-				`${TODO_KEY_PREFIX}${updatedTodo.id}`,
-				JSON.stringify(updatedTodo)
-			);
+			localStorage.setItem(localStorageKey, JSON.stringify(newTodo));
 			break;
 		}
+		case TTodoStoreActionTypes.UPDATE_TODO_TEXT_CONTENT:
 		case TTodoStoreActionTypes.UPDATE_TODO_COMPLETION_STATUS: {
 			const updatedTodo = updatedAppState.todos.find(
 				(todo) => todo.id === action.payload.updateTodoWithId
@@ -240,15 +231,23 @@ function updateLocalStorage(
 			if (!updatedTodo) {
 				console.error(
 					functionSignature,
-					`Could not find updated todo with id ${action.payload.updateTodoWithId}`
+					action.type,
+					`Could not find updated todo with id ${action.payload.updateTodoWithId} in state`
 				);
 				return;
 			}
 
-			localStorage.setItem(
-				`${TODO_KEY_PREFIX}${updatedTodo.id}`,
-				JSON.stringify(updatedTodo)
-			);
+			const localStorageKey = `${TODO_KEY_PREFIX}${updatedTodo.id}`;
+
+			if (localStorage.getItem(localStorageKey) === null) {
+				console.error(
+					functionSignature,
+					action.type,
+					`localStorage has no item with key ${localStorageKey}. Creating...`
+				);
+			}
+
+			localStorage.setItem(localStorageKey, JSON.stringify(updatedTodo));
 			break;
 		}
 		case TTodoStoreActionTypes.DELETE_TODO: {
