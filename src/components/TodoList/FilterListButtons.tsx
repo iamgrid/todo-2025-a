@@ -20,7 +20,11 @@ export default function FilterListButtons({
 }: TFilterListButtonsProps) {
 	return (
 		<ButtonGroupWrapper>
-			<Typography sx={{ marginRight: 1 }} color="text.secondary">
+			<Typography
+				sx={{ marginRight: 1 }}
+				color="text.secondary"
+				fontSize={14}
+			>
 				Filter:
 			</Typography>
 			<ToggleButtonGroup

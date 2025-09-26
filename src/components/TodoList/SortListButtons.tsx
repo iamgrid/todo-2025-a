@@ -20,7 +20,11 @@ export default function SortListButtons({
 }: TSortListButtonsProps) {
 	return (
 		<ButtonGroupWrapper>
-			<Typography sx={{ marginRight: 1 }} color="text.secondary">
+			<Typography
+				sx={{ marginRight: 1 }}
+				color="text.secondary"
+				fontSize={14}
+			>
 				Sort:
 			</Typography>
 			<ToggleButtonGroup
