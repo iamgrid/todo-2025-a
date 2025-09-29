@@ -20,6 +20,8 @@ import customTheme from "./customTheme.ts";
 
 import TodoList from "./components/TodoList/TodoList.tsx";
 
+import appLogo from "./assets/todo-2025-a-logo.svg";
+
 import "./overrides.css";
 import {
 	MAX_TODO_TITLE_LENGTH,
@@ -86,6 +88,22 @@ function App() {
 				payload: todosFromLocalStorage,
 			});
 		}
+
+		const keyDownHandler = (event: KeyboardEvent) => {
+			const functionSignature = "App.tsx@keyDownHandler()";
+			if (event.key === "Enter" && event.ctrlKey) {
+				console.log(functionSignature, "Ctrl+Enter detected");
+				event.preventDefault();
+				focusNewTodoInputField();
+				window.scrollTo(0, 0);
+			}
+		};
+		window.addEventListener("keydown", keyDownHandler);
+
+		return () => {
+			// Cleanup if needed when component unmounts
+			window.removeEventListener("keydown", keyDownHandler);
+		};
 	}, []);
 
 	const {
@@ -214,6 +232,13 @@ function App() {
 	return (
 		<ThemeProvider theme={customTheme}>
 			<Container maxWidth="md">
+				<Box sx={{ mt: 1, mb: 3, textAlign: "center" }}>
+					<img
+						src={appLogo}
+						alt="Todo 2025 Logo"
+						className="app-logo"
+					/>
+				</Box>
 				<AddTodoForm
 					className="new-todo-form"
 					noValidate
@@ -233,17 +258,20 @@ function App() {
 							textarea: {
 								color: "#fff",
 							},
-							label: { color: "gray" },
+							label: { color: "#bbb" },
 							"& .MuiOutlinedInput-root:not(.Mui-error)": {
 								"& fieldset": {
-									borderColor: "#669cc3",
+									borderColor: "primary.light",
 								},
 								"&:hover fieldset": {
-									borderColor: "#507f98",
+									borderColor: "secondary.main",
 								},
 								"&.Mui-focused fieldset": {
-									borderColor: "#0674a7",
+									borderColor: "secondary.main",
 								},
+							},
+							"& .MuiFormHelperText-root:not(.Mui-error)": {
+								color: "primary.main",
 							},
 						}}
 						placeholder="What needs to be done?"
@@ -255,7 +283,7 @@ function App() {
 						helperText={
 							!todoInputIsValid
 								? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
-								: ""
+								: "Use [Ctrl+Enter] to focus this field."
 						}
 						multiline={true}
 						minRows={1}

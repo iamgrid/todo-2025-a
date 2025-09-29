@@ -1,11 +1,12 @@
 import { createTheme } from "@mui/material";
 
-const colors = {
+const customThemeColors = {
 	MAIN: "#507f98",
 	MAIN_DARK: "#0674a7",
 	MAIN_LIGHT: "#669cc3",
 	MAIN_EXTRA_LIGHT: "#50809850",
 	MAIN_EXTRA_LIGHT_B: "#50809810",
+	HIGHLIGHT: "#29b690",
 };
 
 const customTheme = createTheme({
@@ -13,9 +14,12 @@ const customTheme = createTheme({
 	// colorSchemes: { dark: true },
 	palette: {
 		primary: {
-			main: colors.MAIN,
-			dark: colors.MAIN_DARK,
-			light: colors.MAIN_LIGHT,
+			main: customThemeColors.MAIN,
+			dark: customThemeColors.MAIN_DARK,
+			light: customThemeColors.MAIN_LIGHT,
+		},
+		secondary: {
+			main: customThemeColors.HIGHLIGHT,
 		},
 	},
 	shape: { borderRadius: 12 },
@@ -25,12 +29,12 @@ const customTheme = createTheme({
 				root: {
 					textTransform: "none",
 					lineHeight: "normal",
-					"&.Mui-outlinedPrimary:hover": {
-						backgroundColor: colors.MAIN_EXTRA_LIGHT_B,
-						borderColor: colors.MAIN_EXTRA_LIGHT,
+					"&.MuiButton-outlinedPrimary:hover": {
+						backgroundColor: customThemeColors.MAIN_EXTRA_LIGHT_B,
+						borderColor: customThemeColors.MAIN_EXTRA_LIGHT,
 					},
-					"&.Mui-containedPrimary:hover": {
-						backgroundColor: colors.MAIN_DARK,
+					"&.MuiButton-containedPrimary:hover": {
+						backgroundColor: customThemeColors.HIGHLIGHT,
 					},
 				},
 			},
@@ -42,19 +46,28 @@ const customTheme = createTheme({
 					lineHeight: "normal",
 					paddingLeft: 12,
 					paddingRight: 12,
-					color: colors.MAIN,
-					borderColor: colors.MAIN_EXTRA_LIGHT,
+					color: customThemeColors.MAIN,
+					borderColor: customThemeColors.MAIN_EXTRA_LIGHT,
 					"&.Mui-selected": {
-						backgroundColor: colors.MAIN,
+						backgroundColor: customThemeColors.MAIN,
 						color: "#fff",
 					},
 					"&.Mui-selected:hover": {
-						backgroundColor: colors.MAIN,
+						backgroundColor: customThemeColors.MAIN,
 					},
 					"&:hover": {
-						backgroundColor: colors.MAIN_EXTRA_LIGHT_B,
+						backgroundColor: customThemeColors.MAIN_EXTRA_LIGHT_B,
 					},
 					transition: "background-color 0.3s, color 0.3s",
+				},
+			},
+		},
+		MuiCheckbox: {
+			styleOverrides: {
+				root: {
+					"&.Mui-checked": {
+						color: customThemeColors.HIGHLIGHT,
+					},
 				},
 			},
 		},
