@@ -28,6 +28,8 @@ export const TTodoStoreActionTypes = {
 	UPDATE_TODO_COMPLETION_STATUS: "UPDATE_TODO_COMPLETION_STATUS",
 	DELETE_TODO: "DELETE_TODO",
 	LOAD_USER_DATA_FROM_LOCAL_STORAGE: "LOAD_USER_DATA_FROM_LOCAL_STORAGE",
+	COMPLETE_ALL_TODOS: "COMPLETE_ALL_TODOS",
+	CLEAR_COMPLETED_TODOS: "CLEAR_COMPLETED_TODOS",
 } as const;
 
 export type TTodoStoreAction =
@@ -53,7 +55,9 @@ export type TTodoStoreAction =
 	| {
 			type: typeof TTodoStoreActionTypes.LOAD_USER_DATA_FROM_LOCAL_STORAGE;
 			payload: TTodo[];
-	  };
+	  }
+	| { type: typeof TTodoStoreActionTypes.COMPLETE_ALL_TODOS }
+	| { type: typeof TTodoStoreActionTypes.CLEAR_COMPLETED_TODOS };
 
 export function todoStoreReducer(
 	state: TTodoStoreState,
@@ -173,6 +177,56 @@ export function todoStoreReducer(
 				todoIdIterator: highestId + 1,
 			};
 		}
+		case TTodoStoreActionTypes.COMPLETE_ALL_TODOS: {
+			const nowIsoString = new Date().toISOString();
+
+			const todosToUpdate: number[] = [];
+
+			const newTodos = state.todos.map((todo) => {
+				if (!todo.isCompleted) {
+					todosToUpdate.push(todo.id);
+					return {
+						...todo,
+						isCompleted: true,
+						completedAt: nowIsoString,
+					};
+				} else {
+					return todo;
+				}
+			});
+
+			const newState = {
+				...state,
+				todos: newTodos,
+			};
+
+			updateLocalStorage(newState, action, undefined, todosToUpdate);
+
+			return newState;
+		}
+		case TTodoStoreActionTypes.CLEAR_COMPLETED_TODOS: {
+			const todosToClear: number[] = [];
+			state.todos.forEach((todo) => {
+				if (todo.isCompleted) {
+					todosToClear.push(todo.id);
+				}
+			});
+
+			const newState = {
+				...state,
+				todos: state.todos.filter((todo) => !todo.isCompleted),
+			};
+
+			updateLocalStorage(
+				newState,
+				action,
+				undefined,
+				undefined,
+				todosToClear
+			);
+
+			return newState;
+		}
 		default: {
 			console.error(
 				functionSignature,
@@ -187,7 +241,9 @@ export function todoStoreReducer(
 function updateLocalStorage(
 	updatedAppState: TTodoStoreState,
 	action: TTodoStoreAction,
-	newTodoId?: number
+	newTodoId?: number,
+	todosToUpdate?: number[],
+	todosToClear?: number[]
 ) {
 	const functionSignature = "todoStore.ts@updateLocalStorage()";
 
@@ -254,6 +310,43 @@ function updateLocalStorage(
 			localStorage.removeItem(
 				`${TODO_KEY_PREFIX}${action.payload.deleteTodoWithId}`
 			);
+			break;
+		}
+		case TTodoStoreActionTypes.COMPLETE_ALL_TODOS: {
+			if (todosToUpdate === undefined) {
+				console.error(functionSignature, "todosToUpdate is undefined");
+				return;
+			}
+
+			todosToUpdate.forEach((todoId) => {
+				const localStorageKey = `${TODO_KEY_PREFIX}${todoId}`;
+				if (localStorage.getItem(localStorageKey) === null) {
+					console.error(
+						functionSignature,
+						action.type,
+						`localStorage has no item with key ${localStorageKey}. Creating...`
+					);
+				}
+
+				localStorage.setItem(
+					localStorageKey,
+					JSON.stringify(
+						updatedAppState.todos.find((todo) => todo.id === todoId)
+					)
+				);
+			});
+			break;
+		}
+		case TTodoStoreActionTypes.CLEAR_COMPLETED_TODOS: {
+			if (todosToClear === undefined) {
+				console.error(functionSignature, "todosToClear is undefined");
+				return;
+			}
+
+			todosToClear.forEach((todoId) => {
+				const localStorageKey = `${TODO_KEY_PREFIX}${todoId}`;
+				localStorage.removeItem(localStorageKey);
+			});
 			break;
 		}
 		default:

@@ -1,4 +1,4 @@
-import { useState, useReducer, useEffect } from "react";
+import { useState, useReducer, useEffect, useMemo } from "react";
 import {
 	todoStoreReducer,
 	initialTodoStoreState,
@@ -9,6 +9,8 @@ import {
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+// import ButtonGroup from "@mui/material/ButtonGroup";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -23,6 +25,7 @@ import {
 	MAX_TODO_TITLE_LENGTH,
 	TODO_TITLE_LENGTH_ERROR_MESSAGE,
 } from "./helpers.tsx";
+import AlertDialog from "./components/shared/AlertDialog.tsx";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
@@ -53,6 +56,13 @@ function App() {
 		setTodoInputValueIsOverMaxLengthBy,
 	] = useState<number>(0);
 
+	const [isCompleteAllAlertDialogOpen, setIsCompleteAllAlertDialogOpen] =
+		useState<boolean>(false);
+	const [
+		isClearCompletedAlertDialogOpen,
+		setIsClearCompletedAlertDialogOpen,
+	] = useState<boolean>(false);
+
 	useEffect(() => {
 		const functionSignature = "App.tsx@component mounted useEffect()";
 
@@ -77,6 +87,24 @@ function App() {
 			});
 		}
 	}, []);
+
+	const {
+		noOfTodos,
+		noOfIncompleteTodos,
+		noOfCompletedTodos,
+	}: {
+		noOfTodos: number;
+		noOfIncompleteTodos: number;
+		noOfCompletedTodos: number;
+	} = useMemo(() => {
+		const noOfTodos = todoStoreState.todos.length;
+		const noOfIncompleteTodos = todoStoreState.todos.filter(
+			(todo) => !todo.isCompleted
+		).length;
+		const noOfCompletedTodos = noOfTodos - noOfIncompleteTodos;
+
+		return { noOfTodos, noOfIncompleteTodos, noOfCompletedTodos };
+	}, [todoStoreState.todos]);
 
 	function focusNewTodoInputField() {
 		const functionSignature = "App.tsx@focusNewTodoInputField()";
@@ -274,27 +302,84 @@ function App() {
 				<MainWrapper>
 					{todoStoreState.todos.length === 0 ? (
 						<Typography
-							// variant="h6"
 							textAlign={"center"}
 							fontStyle={"italic"}
 							color="text.secondary"
-							sx={{ mt: 4 }}
 						>
 							You have no todos yet. Add one above to get started!
 						</Typography>
 					) : (
-						<TodoList
-							todos={todoStoreState.todos}
-							handleToggleTodoCompletion={
-								handleToggleTodoCompletion
-							}
-							handleDeleteTodo={handleDeleteTodo}
-							handleEditedTodoSubmission={
-								handleEditedTodoSubmission
-							}
-						/>
+						<>
+							<TodoList
+								todos={todoStoreState.todos}
+								noOfTodos={noOfTodos}
+								noOfIncompleteTodos={noOfIncompleteTodos}
+								noOfCompletedTodos={noOfCompletedTodos}
+								handleToggleTodoCompletion={
+									handleToggleTodoCompletion
+								}
+								handleDeleteTodo={handleDeleteTodo}
+								handleEditedTodoSubmission={
+									handleEditedTodoSubmission
+								}
+							/>
+							<Box sx={{ mt: 4, mb: 2, textAlign: "center" }}>
+								{/* <ButtonGroup> */}
+								<Button
+									variant="text"
+									disabled={noOfIncompleteTodos === 0}
+									onClick={() =>
+										setIsCompleteAllAlertDialogOpen(true)
+									}
+								>
+									Complete All
+								</Button>
+								<Button
+									variant="text"
+									disabled={noOfCompletedTodos === 0}
+									onClick={() =>
+										setIsClearCompletedAlertDialogOpen(true)
+									}
+								>
+									Clear Completed
+								</Button>
+								{/* </ButtonGroup> */}
+							</Box>
+						</>
 					)}
 				</MainWrapper>
+				<AlertDialog
+					isOpen={isCompleteAllAlertDialogOpen}
+					description={`You are about to mark ${noOfIncompleteTodos} incomplete todo${
+						noOfIncompleteTodos === 1 ? "" : "s"
+					} as completed. Proceed?`}
+					confirmButtonText="Complete All"
+					confirmButtonColor="primary"
+					handleCancel={() => setIsCompleteAllAlertDialogOpen(false)}
+					handleConfirm={() => {
+						todoStoreDispatch({
+							type: TTodoStoreActionTypes.COMPLETE_ALL_TODOS,
+						});
+						setIsCompleteAllAlertDialogOpen(false);
+					}}
+				/>
+				<AlertDialog
+					isOpen={isClearCompletedAlertDialogOpen}
+					description={`You are about to permanently delete ${noOfCompletedTodos} completed todo${
+						noOfCompletedTodos === 1 ? "" : "s"
+					}. This action cannot be undone. Proceed?`}
+					confirmButtonText="Clear Completed"
+					confirmButtonColor="error"
+					handleCancel={() =>
+						setIsClearCompletedAlertDialogOpen(false)
+					}
+					handleConfirm={() => {
+						todoStoreDispatch({
+							type: TTodoStoreActionTypes.CLEAR_COMPLETED_TODOS,
+						});
+						setIsClearCompletedAlertDialogOpen(false);
+					}}
+				/>
 			</Container>
 		</ThemeProvider>
 	);

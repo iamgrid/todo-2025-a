@@ -20,6 +20,9 @@ import SortListButtons from "./SortListButtons.tsx";
 
 export interface TTodoListProps {
 	todos: TTodo[];
+	noOfTodos: number;
+	noOfIncompleteTodos: number;
+	noOfCompletedTodos: number;
 	handleToggleTodoCompletion(todoId: number, newStatus: boolean): void;
 	handleDeleteTodo(todoId: number): void;
 	handleEditedTodoSubmission(editedTodoId: number, newText: string): void;
@@ -37,6 +40,9 @@ const TopFunctionsBar = styled("div")({
 
 export default function TodoList({
 	todos,
+	noOfTodos,
+	noOfIncompleteTodos,
+	noOfCompletedTodos,
 	handleToggleTodoCompletion,
 	handleDeleteTodo,
 	handleEditedTodoSubmission,
@@ -131,6 +137,9 @@ export default function TodoList({
 		<>
 			<TopFunctionsBar>
 				<FilterListButtons
+					noOfTodos={noOfTodos}
+					noOfIncompleteTodos={noOfIncompleteTodos}
+					noOfCompletedTodos={noOfCompletedTodos}
 					currentFilteringOption={currentFilteringOption}
 					setCurrentFilteringOption={setCurrentFilteringOption}
 				/>

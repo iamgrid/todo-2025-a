@@ -8,6 +8,9 @@ import { Typography } from "@mui/material";
 import { buttonGroupWrapperStyle } from "../../customTheme";
 
 interface TFilterListButtonsProps {
+	noOfTodos: number;
+	noOfIncompleteTodos: number;
+	noOfCompletedTodos: number;
 	currentFilteringOption: TFilteringOption;
 	setCurrentFilteringOption: (option: TFilteringOption) => void;
 }
@@ -15,6 +18,9 @@ interface TFilterListButtonsProps {
 export const ButtonGroupWrapper = styled("div")(buttonGroupWrapperStyle);
 
 export default function FilterListButtons({
+	noOfTodos,
+	noOfIncompleteTodos,
+	noOfCompletedTodos,
 	currentFilteringOption,
 	setCurrentFilteringOption,
 }: TFilterListButtonsProps) {
@@ -41,19 +47,19 @@ export default function FilterListButtons({
 				}}
 			>
 				<ToggleButton value={FILTERING_OPTIONS.all} aria-label="All">
-					All
+					All ({noOfTodos})
 				</ToggleButton>
 				<ToggleButton
 					value={FILTERING_OPTIONS.incomplete}
 					aria-label="Incomplete"
 				>
-					Incomplete
+					Incomplete ({noOfIncompleteTodos})
 				</ToggleButton>
 				<ToggleButton
 					value={FILTERING_OPTIONS.completed}
 					aria-label="Completed"
 				>
-					Completed
+					Completed ({noOfCompletedTodos})
 				</ToggleButton>
 			</ToggleButtonGroup>
 		</ButtonGroupWrapper>
