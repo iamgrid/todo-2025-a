@@ -37,6 +37,8 @@ const AddTodoForm = styled("form")({
 	gap: "16px",
 	alignItems: "start",
 	width: "100%",
+	marginBottom: "36px",
+	padding: "0 24px",
 });
 
 function App() {
@@ -75,8 +77,6 @@ function App() {
 			});
 		}
 	}, []);
-
-	// console.log("Current todoStoreState:", todoStoreState);
 
 	function focusNewTodoInputField() {
 		const functionSignature = "App.tsx@focusNewTodoInputField()";
@@ -186,53 +186,92 @@ function App() {
 	return (
 		<ThemeProvider theme={customTheme}>
 			<Container maxWidth="md">
-				<MainWrapper>
-					<AddTodoForm
-						className="new-todo-form"
-						noValidate
-						autoComplete="off"
-						onSubmit={(event) => {
-							handleNewTodoFormSubmission(event);
+				<AddTodoForm
+					className="new-todo-form"
+					noValidate
+					autoComplete="off"
+					onSubmit={(event) => {
+						handleNewTodoFormSubmission(event);
+					}}
+					data-joy-color-scheme="dark"
+				>
+					<TextField
+						id="new-todo-form__input"
+						label="Add New Todo"
+						variant="outlined"
+						fullWidth
+						margin="normal"
+						sx={{
+							textarea: {
+								color: "#fff",
+							},
+							label: { color: "gray" },
+							"& .MuiOutlinedInput-root:not(.Mui-error)": {
+								"& fieldset": {
+									borderColor: "#669cc3",
+								},
+								"&:hover fieldset": {
+									borderColor: "#507f98",
+								},
+								"&.Mui-focused fieldset": {
+									borderColor: "#0674a7",
+								},
+							},
 						}}
-					>
-						<TextField
-							id="new-todo-form__input"
-							label="Add New Todo"
-							variant="outlined"
-							fullWidth
-							margin="normal"
-							placeholder="What needs to be done?"
-							autoFocus
-							onChange={(event) =>
-								handleTodoInputChange(event.target.value)
+						placeholder="What needs to be done?"
+						autoFocus
+						onChange={(event) =>
+							handleTodoInputChange(event.target.value)
+						}
+						error={!todoInputIsValid}
+						helperText={
+							!todoInputIsValid
+								? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
+								: ""
+						}
+						multiline={true}
+						minRows={1}
+						maxRows={4}
+						onKeyDown={(event) => {
+							if (event.key === "Enter") {
+								event.preventDefault();
+								handleNewTodoFormSubmission();
 							}
-							error={!todoInputIsValid}
-							helperText={
-								!todoInputIsValid
-									? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
-									: ""
-							}
-							multiline={true}
-							minRows={1}
-							maxRows={4}
-							onKeyDown={(event) => {
-								if (event.key === "Enter") {
-									event.preventDefault();
-									handleNewTodoFormSubmission();
+						}}
+						onBlur={() => {
+							const newTodoInputField = document.getElementById(
+								"new-todo-form__input"
+							) as HTMLInputElement | null;
+							if (newTodoInputField !== null) {
+								if (
+									newTodoInputField.value.trim().length === 0
+								) {
+									newTodoInputField.value = "";
+									setTodoInputIsValid(true);
+									setTodoInputValueIsOverMaxLengthBy(0);
 								}
-							}}
-						/>
-						<Button
-							variant="contained"
-							color="primary"
-							type="submit"
-							sx={{ mt: 3, height: "40px" }}
-							startIcon={<AddIcon />}
-							disabled={!todoInputIsValid}
-						>
-							Add
-						</Button>
-					</AddTodoForm>
+							}
+						}}
+					/>
+					<Button
+						variant="contained"
+						color="primary"
+						type="submit"
+						sx={{
+							mt: 3,
+							height: "40px",
+							"&:disabled": {
+								color: "#aaa",
+								backgroundColor: "#444",
+							},
+						}}
+						startIcon={<AddIcon />}
+						disabled={!todoInputIsValid}
+					>
+						Add
+					</Button>
+				</AddTodoForm>
+				<MainWrapper>
 					{todoStoreState.todos.length === 0 ? (
 						<Typography
 							// variant="h6"

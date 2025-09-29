@@ -9,6 +9,8 @@ const colors = {
 };
 
 const customTheme = createTheme({
+	// cssVariables: true,
+	// colorSchemes: { dark: true },
 	palette: {
 		primary: {
 			main: colors.MAIN,
