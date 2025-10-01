@@ -96,6 +96,11 @@ const customTheme = createTheme({
 						backgroundColor: customThemeColors.MAIN_DARK_B,
 						color: "#fff",
 					},
+					"& .MuiSnackbarContent-root": {
+						borderRadius: 0,
+						lineHeight: "normal",
+						border: `1px solid ${customThemeColors.MAIN_EXTRA_LIGHT}`,
+					},
 				},
 			},
 		},

@@ -272,11 +272,15 @@ function updateLocalStorage(
 				console.error(
 					functionSignature,
 					action.type,
-					`localStorage already has an item with key ${localStorageKey}. Overwriting...`
+					`localStorage already has an item with key ${localStorageKey}. Overwriting...`,
+					localStorage.getItem(localStorageKey)
 				);
 			}
 
-			localStorage.setItem(localStorageKey, JSON.stringify(newTodo));
+			setTimeout(() => {
+				localStorage.setItem(localStorageKey, JSON.stringify(newTodo));
+			}, 100);
+
 			break;
 		}
 		case TTodoStoreActionTypes.UPDATE_TODO_TEXT_CONTENT:
@@ -303,7 +307,12 @@ function updateLocalStorage(
 				);
 			}
 
-			localStorage.setItem(localStorageKey, JSON.stringify(updatedTodo));
+			setTimeout(() => {
+				localStorage.setItem(
+					localStorageKey,
+					JSON.stringify(updatedTodo)
+				);
+			}, 100);
 			break;
 		}
 		case TTodoStoreActionTypes.DELETE_TODO: {
@@ -328,12 +337,16 @@ function updateLocalStorage(
 					);
 				}
 
-				localStorage.setItem(
-					localStorageKey,
-					JSON.stringify(
-						updatedAppState.todos.find((todo) => todo.id === todoId)
-					)
-				);
+				setTimeout(() => {
+					localStorage.setItem(
+						localStorageKey,
+						JSON.stringify(
+							updatedAppState.todos.find(
+								(todo) => todo.id === todoId
+							)
+						)
+					);
+				}, 100);
 			});
 			break;
 		}

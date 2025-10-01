@@ -218,7 +218,7 @@ function App() {
 									handleEditedTodoSubmission
 								}
 							/>
-							<Box sx={{ mt: 4, mb: 2, textAlign: "center" }}>
+							<Box sx={{ mt: 2, textAlign: "center" }}>
 								{/* <ButtonGroup> */}
 								<Button
 									variant="text"
