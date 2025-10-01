@@ -11,6 +11,7 @@ import {
 	NEW_TODO_INPUT_FIELD_ID,
 	TODO_TITLE_LENGTH_ERROR_MESSAGE,
 } from "./../../helpers.tsx";
+import { useMatchMedia } from "../shared/useMatchMedia.tsx";
 
 interface TAddTodoFormProps {
 	handleAddTodo(newTodoText: string): void;
@@ -36,6 +37,7 @@ export default function AddTodoForm({
 		todoInputValueIsOverMaxLengthBy,
 		setTodoInputValueIsOverMaxLengthBy,
 	] = useState<number>(0);
+	const doesUserHaveAProperMouse = useMatchMedia("(pointer:fine)");
 
 	function handleTodoInputChange(newValue: string) {
 		const trimmedValue = newValue.trim();
@@ -142,7 +144,9 @@ export default function AddTodoForm({
 				helperText={
 					!todoInputIsValid
 						? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
-						: "Hit [Ctrl+Enter] to focus this field."
+						: doesUserHaveAProperMouse
+						? "Hit [Ctrl+Enter] to focus this field."
+						: null
 				}
 				multiline={true}
 				minRows={1}

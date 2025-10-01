@@ -33,12 +33,27 @@ const TodoItemTitle = styled("span")<{ isCompleted: boolean }>(
 	})
 );
 
+const BUTTONS_BREAKPOINT = "700px";
+
 const EditTodoForm = styled("form")({
 	display: "grid",
-	gridTemplateColumns: "1fr auto auto",
-	// gap: "8px",
+	gridTemplateColumns: "1fr auto",
+	[`@media (max-width: ${BUTTONS_BREAKPOINT})`]: {
+		gridTemplateColumns: "unset",
+		gridTemplateRows: "auto auto",
+	},
+	gap: "8px 16px",
 	alignItems: "start",
 	width: "100%",
+});
+
+const EditTodoFormButtonWrapper = styled("div")({
+	display: "flex",
+	gap: "8px",
+	marginTop: "12px",
+	[`@media (max-width: ${BUTTONS_BREAKPOINT})`]: {
+		marginTop: "0",
+	},
 });
 
 export interface TTodoListItemProps {
@@ -257,27 +272,27 @@ export default function TodoListItem({
 							}
 						}}
 					/>
-					<Button
-						type="submit"
-						variant="contained"
-						color="primary"
-						startIcon={<SaveIcon />}
-						sx={{ ml: 2, mt: "12px" }}
-						disabled={!editTodoInputIsValid}
-					>
-						Save
-					</Button>
-					<Button
-						variant="outlined"
-						color="primary"
-						startIcon={<CancelIcon />}
-						sx={{ ml: 1, mt: "12px" }}
-						onClick={() => {
-							handleCancelEditing();
-						}}
-					>
-						Cancel
-					</Button>
+					<EditTodoFormButtonWrapper>
+						<Button
+							type="submit"
+							variant="contained"
+							color="primary"
+							startIcon={<SaveIcon />}
+							disabled={!editTodoInputIsValid}
+						>
+							Save
+						</Button>
+						<Button
+							variant="outlined"
+							color="primary"
+							startIcon={<CancelIcon />}
+							onClick={() => {
+								handleCancelEditing();
+							}}
+						>
+							Cancel
+						</Button>
+					</EditTodoFormButtonWrapper>
 				</EditTodoForm>
 			)}
 		</ListItem>

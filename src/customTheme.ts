@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material";
 const customThemeColors = {
 	MAIN: "#507f98",
 	MAIN_DARK: "#0674a7",
-	MAIN_DARK_B: "#27404d",
+	MAIN_DARK_B: "#27404dcc",
 	MAIN_LIGHT: "#669cc3",
 	MAIN_EXTRA_LIGHT: "#50809850",
 	MAIN_EXTRA_LIGHT_B: "#50809810",
@@ -55,9 +55,10 @@ const customTheme = createTheme({
 					"&.Mui-selected": {
 						backgroundColor: customThemeColors.HIGHLIGHT,
 						color: "#fff",
+						cursor: "default",
 					},
 					"&.Mui-selected:hover": {
-						backgroundColor: customThemeColors.MAIN,
+						backgroundColor: customThemeColors.HIGHLIGHT,
 					},
 					"&:hover": {
 						backgroundColor: customThemeColors.MAIN_EXTRA_LIGHT_B,
