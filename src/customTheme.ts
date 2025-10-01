@@ -3,6 +3,7 @@ import { createTheme } from "@mui/material";
 const customThemeColors = {
 	MAIN: "#507f98",
 	MAIN_DARK: "#0674a7",
+	MAIN_DARK_B: "#27404d",
 	MAIN_LIGHT: "#669cc3",
 	MAIN_EXTRA_LIGHT: "#50809850",
 	MAIN_EXTRA_LIGHT_B: "#50809810",
@@ -84,6 +85,16 @@ const customTheme = createTheme({
 				root: {
 					"&.Mui-checked": {
 						color: customThemeColors.HIGHLIGHT,
+					},
+				},
+			},
+		},
+		MuiSnackbar: {
+			styleOverrides: {
+				root: {
+					"& .MuiPaper-root": {
+						backgroundColor: customThemeColors.MAIN_DARK_B,
+						color: "#fff",
 					},
 				},
 			},

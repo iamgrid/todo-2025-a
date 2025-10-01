@@ -12,6 +12,7 @@ export interface TAlertDialogProps {
 	confirmButtonColor?: "primary" | "error" | "warning" | "info" | "success";
 	handleCancel(): void;
 	handleConfirm(): void;
+	showCancelButton?: boolean;
 }
 
 export default function AlertDialog({
@@ -22,6 +23,7 @@ export default function AlertDialog({
 	confirmButtonColor = "primary",
 	handleCancel,
 	handleConfirm,
+	showCancelButton = true,
 }: TAlertDialogProps) {
 	return (
 		<Dialog
@@ -35,7 +37,9 @@ export default function AlertDialog({
 				</DialogContentText>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleCancel}>{cancelButtonText}</Button>
+				{showCancelButton && (
+					<Button onClick={handleCancel}>{cancelButtonText}</Button>
+				)}
 				<Button onClick={handleConfirm} color={confirmButtonColor}>
 					{confirmButtonText}
 				</Button>

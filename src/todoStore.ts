@@ -358,7 +358,10 @@ function updateLocalStorage(
 	}
 }
 
-export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
+export function getAllTodoObjectsFromLocalStorage(): null | {
+	validTodos: TTodo[];
+	invalidTodoKeys: string[];
+} {
 	const functionSignature =
 		"todoStore.ts@getAllTodoObjectsFromLocalStorage()";
 
@@ -373,6 +376,7 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 	}
 
 	const todos: TTodo[] = [];
+	const invalidTodoKeys: string[] = [];
 
 	keysInLocalStorage.forEach((key) => {
 		if (key.startsWith(TODO_KEY_PREFIX)) {
@@ -383,6 +387,8 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 					`lsItem is not a string or is null. Skipping...`,
 					lsItem
 				);
+
+				invalidTodoKeys.push(key);
 
 				return;
 			}
@@ -398,6 +404,9 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 						`The item in localStorage for key ${key} is not an object. Skipping...`,
 						parsedTodo
 					);
+
+					invalidTodoKeys.push(key);
+
 					return;
 				}
 
@@ -415,6 +424,9 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 						`The item in localStorage for key ${key} is missing one or more required properties. Skipping...`,
 						parsedTodo
 					);
+
+					invalidTodoKeys.push(key);
+
 					return;
 				}
 
@@ -435,6 +447,9 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 						`The item in localStorage for key ${key} does not have the correct types. Skipping...`,
 						parsedTodo
 					);
+
+					invalidTodoKeys.push(key);
+
 					return;
 				}
 
@@ -465,6 +480,12 @@ export function getAllTodoObjectsFromLocalStorage(): null | TTodo[] {
 		return null;
 	} else {
 		const todosSortedById = [...todos].sort((a, b) => b.id - a.id);
-		return todosSortedById;
+		return { validTodos: todosSortedById, invalidTodoKeys };
 	}
+}
+
+export function deleteTodosFromLocalStorage(keys: string[]) {
+	keys.forEach((key) => {
+		localStorage.removeItem(key);
+	});
 }

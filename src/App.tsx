@@ -4,6 +4,7 @@ import {
 	initialTodoStoreState,
 	getAllTodoObjectsFromLocalStorage,
 	TTodoStoreActionTypes,
+	deleteTodosFromLocalStorage,
 } from "./todoStore";
 
 import Container from "@mui/material/Container";
@@ -12,6 +13,7 @@ import Button from "@mui/material/Button";
 // import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import Snackbar from "@mui/material/Snackbar";
 import AddIcon from "@mui/icons-material/Add";
 
 import { ThemeProvider } from "@mui/material";
@@ -64,20 +66,31 @@ function App() {
 		isClearCompletedAlertDialogOpen,
 		setIsClearCompletedAlertDialogOpen,
 	] = useState<boolean>(false);
+	const [
+		isCorruptedLSTodosAlertDialogOpen,
+		setIsCorruptedLSTodosAlertDialogOpen,
+	] = useState<boolean>(false);
+	const [corruptedLSTodoKeys, setCorruptedLSTodoKeys] = useState<string[]>(
+		[]
+	);
+
+	const [isSnackbarOpen, setIsSnackbarOpen] = useState<boolean>(false);
+	const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
 	useEffect(() => {
 		const functionSignature = "App.tsx@component mounted useEffect()";
 
 		// Load user data from localStorage
-		const todosFromLocalStorage = getAllTodoObjectsFromLocalStorage();
+		const todosFromLocalStorageResponse =
+			getAllTodoObjectsFromLocalStorage();
 
 		console.log(
 			functionSignature,
-			"todosFromLocalStorage:",
-			todosFromLocalStorage
+			"todosFromLocalStorageResponse:",
+			todosFromLocalStorageResponse
 		);
 
-		if (todosFromLocalStorage !== null) {
+		if (todosFromLocalStorageResponse !== null) {
 			console.log(
 				functionSignature,
 				"localStorage contained todos for this user, updating state..."
@@ -85,8 +98,24 @@ function App() {
 
 			todoStoreDispatch({
 				type: TTodoStoreActionTypes.LOAD_USER_DATA_FROM_LOCAL_STORAGE,
-				payload: todosFromLocalStorage,
+				payload: todosFromLocalStorageResponse.validTodos,
 			});
+
+			if (todosFromLocalStorageResponse.invalidTodoKeys.length > 0) {
+				setCorruptedLSTodoKeys([
+					...todosFromLocalStorageResponse.invalidTodoKeys,
+				]);
+				setIsCorruptedLSTodosAlertDialogOpen(true);
+			}
+
+			setSnackbarMessage(
+				`${todosFromLocalStorageResponse.validTodos.length} todo${
+					todosFromLocalStorageResponse.validTodos.length === 1
+						? ""
+						: "s"
+				} were restored from localStorage.`
+			);
+			setIsSnackbarOpen(true);
 		}
 
 		const keyDownHandler = (event: KeyboardEvent) => {
@@ -407,6 +436,33 @@ function App() {
 						});
 						setIsClearCompletedAlertDialogOpen(false);
 					}}
+				/>
+				<AlertDialog
+					isOpen={isCorruptedLSTodosAlertDialogOpen}
+					description={
+						<span>
+							The following saved todos were corrupted in
+							localStorage and could not be loaded:{" "}
+							<b>{corruptedLSTodoKeys.join(", ")}</b>.
+						</span>
+					}
+					cancelButtonText="Leave corrupted todos as is"
+					confirmButtonText="Delete corrupted todos"
+					confirmButtonColor="error"
+					handleCancel={() =>
+						setIsCorruptedLSTodosAlertDialogOpen(false)
+					}
+					handleConfirm={() => {
+						deleteTodosFromLocalStorage(corruptedLSTodoKeys);
+						setIsCorruptedLSTodosAlertDialogOpen(false);
+					}}
+				/>
+				<Snackbar
+					open={isSnackbarOpen}
+					autoHideDuration={6000}
+					onClose={() => setIsSnackbarOpen(false)}
+					message={snackbarMessage}
+					anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
 				/>
 			</Container>
 		</ThemeProvider>
