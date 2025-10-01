@@ -12,24 +12,20 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 // import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
-import AddIcon from "@mui/icons-material/Add";
 
 import { ThemeProvider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import customTheme from "./customTheme.ts";
 
 import TodoList from "./components/TodoList/TodoList.tsx";
+import { NEW_TODO_INPUT_FIELD_ID } from "./helpers.tsx";
+import AlertDialog from "./components/shared/AlertDialog.tsx";
+import AddTodoForm from "./components/AddTodoForm/AddTodoForm.tsx";
 
 import appLogo from "./assets/todo-2025-a-logo.svg";
 
 import "./overrides.css";
-import {
-	MAX_TODO_TITLE_LENGTH,
-	TODO_TITLE_LENGTH_ERROR_MESSAGE,
-} from "./helpers.tsx";
-import AlertDialog from "./components/shared/AlertDialog.tsx";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
@@ -38,27 +34,11 @@ const MainWrapper = styled("div")(({ theme }) => ({
 	boxShadow: "0 0 5px 3px rgba(80, 116, 152, .7)",
 }));
 
-const AddTodoForm = styled("form")({
-	display: "grid",
-	gridTemplateColumns: "1fr auto",
-	gap: "16px",
-	alignItems: "start",
-	width: "100%",
-	marginBottom: "36px",
-	padding: "0 24px",
-});
-
 function App() {
 	const [todoStoreState, todoStoreDispatch] = useReducer(
 		todoStoreReducer,
 		initialTodoStoreState
 	);
-
-	const [todoInputIsValid, setTodoInputIsValid] = useState<boolean>(true);
-	const [
-		todoInputValueIsOverMaxLengthBy,
-		setTodoInputValueIsOverMaxLengthBy,
-	] = useState<number>(0);
 
 	const [isCompleteAllAlertDialogOpen, setIsCompleteAllAlertDialogOpen] =
 		useState<boolean>(false);
@@ -157,7 +137,7 @@ function App() {
 		const functionSignature = "App.tsx@focusNewTodoInputField()";
 
 		const newTodoInputField = document.getElementById(
-			"new-todo-form__input"
+			NEW_TODO_INPUT_FIELD_ID
 		) as HTMLInputElement | null;
 		if (newTodoInputField !== null) {
 			newTodoInputField.focus();
@@ -169,69 +149,11 @@ function App() {
 		}
 	}
 
-	function handleTodoInputChange(newValue: string) {
-		const trimmedValue = newValue.trim();
-		if (trimmedValue.length === 0) {
-			setTodoInputIsValid(false);
-			setTodoInputValueIsOverMaxLengthBy(0);
-			return;
-		} else if (trimmedValue.length > MAX_TODO_TITLE_LENGTH) {
-			setTodoInputIsValid(false);
-			setTodoInputValueIsOverMaxLengthBy(
-				trimmedValue.length - MAX_TODO_TITLE_LENGTH
-			);
-			return;
-		} else {
-			setTodoInputIsValid(true);
-			setTodoInputValueIsOverMaxLengthBy(0);
-		}
-	}
-
-	function handleNewTodoFormSubmission(
-		event: React.FormEvent<HTMLFormElement> | null = null
-	) {
-		const functionSignature = "App.tsx@handleNewTodoFormSubmission()";
-
-		if (event !== null) {
-			event.preventDefault();
-		}
-
-		if (!todoInputIsValid) {
-			return;
-		}
-
-		const newTodoField = document.getElementById(
-			"new-todo-form__input"
-		) as HTMLInputElement | null;
-		if (newTodoField === null) {
-			console.error(
-				functionSignature,
-				"Could not find new todo input field in the DOM!"
-			);
-			return;
-		}
-
-		const newTodoText = newTodoField.value.trim();
-
-		if (newTodoText.length === 0) {
-			console.warn(
-				functionSignature,
-				"New todo text is empty, returning early..."
-			);
-			focusNewTodoInputField();
-			return;
-		}
-
+	function handleAddTodo(newTodoText: string) {
 		todoStoreDispatch({
 			type: TTodoStoreActionTypes.ADD_TODO,
 			payload: { text: newTodoText },
 		});
-
-		newTodoField.value = "";
-		setTodoInputIsValid(true);
-		setTodoInputValueIsOverMaxLengthBy(0);
-
-		focusNewTodoInputField();
 	}
 
 	function handleToggleTodoCompletion(todoId: number, newStatus: boolean) {
@@ -269,93 +191,9 @@ function App() {
 					/>
 				</Box>
 				<AddTodoForm
-					className="new-todo-form"
-					noValidate
-					autoComplete="off"
-					onSubmit={(event) => {
-						handleNewTodoFormSubmission(event);
-					}}
-					data-joy-color-scheme="dark"
-				>
-					<TextField
-						id="new-todo-form__input"
-						label="Add New Todo"
-						variant="outlined"
-						fullWidth
-						margin="normal"
-						sx={{
-							textarea: {
-								color: "#fff",
-							},
-							label: { color: "#bbb" },
-							"& .MuiOutlinedInput-root:not(.Mui-error)": {
-								"& fieldset": {
-									borderColor: "primary.light",
-								},
-								"&:hover fieldset": {
-									borderColor: "secondary.main",
-								},
-								"&.Mui-focused fieldset": {
-									borderColor: "secondary.main",
-								},
-							},
-							"& .MuiFormHelperText-root:not(.Mui-error)": {
-								color: "primary.main",
-							},
-						}}
-						placeholder="What needs to be done?"
-						autoFocus
-						onChange={(event) =>
-							handleTodoInputChange(event.target.value)
-						}
-						error={!todoInputIsValid}
-						helperText={
-							!todoInputIsValid
-								? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
-								: "Hit [Ctrl+Enter] to focus this field."
-						}
-						multiline={true}
-						minRows={1}
-						maxRows={4}
-						onKeyDown={(event) => {
-							if (event.key === "Enter") {
-								event.preventDefault();
-								handleNewTodoFormSubmission();
-							}
-						}}
-						onBlur={() => {
-							const newTodoInputField = document.getElementById(
-								"new-todo-form__input"
-							) as HTMLInputElement | null;
-							if (newTodoInputField !== null) {
-								if (
-									newTodoInputField.value.trim().length === 0
-								) {
-									newTodoInputField.value = "";
-									setTodoInputIsValid(true);
-									setTodoInputValueIsOverMaxLengthBy(0);
-								}
-							}
-						}}
-					/>
-					<Button
-						variant="contained"
-						color="primary"
-						type="submit"
-						sx={{
-							mt: 3,
-							height: "40px",
-							"&:disabled": {
-								color: "#aaa",
-								backgroundColor: "#444",
-							},
-						}}
-						startIcon={<AddIcon />}
-						disabled={!todoInputIsValid}
-					>
-						Add
-					</Button>
-				</AddTodoForm>
+					handleAddTodo={handleAddTodo}
+					focusNewTodoInputField={focusNewTodoInputField}
+				/>
 				<MainWrapper>
 					{todoStoreState.todos.length === 0 ? (
 						<Typography

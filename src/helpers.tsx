@@ -1,6 +1,7 @@
 export const TODO_KEY_PREFIX = "todo_";
 export const MAX_TODO_TITLE_LENGTH = 500;
 export const TODO_TITLE_LENGTH_ERROR_MESSAGE = `A todo title should be at least 1, and at most ${MAX_TODO_TITLE_LENGTH} characters long.`;
+export const NEW_TODO_INPUT_FIELD_ID = "new-todo-form__input";
 
 export const SORTING_OPTIONS = {
 	default: "default",
