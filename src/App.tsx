@@ -283,7 +283,7 @@ function App() {
 						helperText={
 							!todoInputIsValid
 								? `${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by ${todoInputValueIsOverMaxLengthBy} characters.)`
-								: "Use [Ctrl+Enter] to focus this field."
+								: "Hit [Ctrl+Enter] to focus this field."
 						}
 						multiline={true}
 						minRows={1}

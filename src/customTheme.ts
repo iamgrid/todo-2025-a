@@ -36,6 +36,9 @@ const customTheme = createTheme({
 					"&.MuiButton-containedPrimary:hover": {
 						backgroundColor: customThemeColors.HIGHLIGHT,
 					},
+					"&.MuiButton-containedPrimary.Mui-focusVisible": {
+						backgroundColor: customThemeColors.HIGHLIGHT,
+					},
 				},
 			},
 		},
@@ -49,7 +52,7 @@ const customTheme = createTheme({
 					color: customThemeColors.MAIN,
 					borderColor: customThemeColors.MAIN_EXTRA_LIGHT,
 					"&.Mui-selected": {
-						backgroundColor: customThemeColors.MAIN,
+						backgroundColor: customThemeColors.HIGHLIGHT,
 						color: "#fff",
 					},
 					"&.Mui-selected:hover": {
@@ -59,6 +62,20 @@ const customTheme = createTheme({
 						backgroundColor: customThemeColors.MAIN_EXTRA_LIGHT_B,
 					},
 					transition: "background-color 0.3s, color 0.3s",
+				},
+			},
+		},
+		MuiTextField: {
+			styleOverrides: {
+				root: {
+					"& .MuiOutlinedInput-root": {
+						"&.Mui-focused fieldset": {
+							borderColor: customThemeColors.HIGHLIGHT,
+						},
+						"&:hover fieldset": {
+							borderColor: customThemeColors.HIGHLIGHT,
+						},
+					},
 				},
 			},
 		},
