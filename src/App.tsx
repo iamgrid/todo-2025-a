@@ -26,6 +26,7 @@ import AddTodoForm from "./components/AddTodoForm/AddTodoForm.tsx";
 import appLogo from "./assets/todo-2025-a-logo.svg";
 
 import "./overrides.css";
+import Footer from "./components/Footer/Footer.tsx";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
@@ -302,6 +303,7 @@ function App() {
 					message={snackbarMessage}
 					anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
 				/>
+				<Footer />
 			</Container>
 		</ThemeProvider>
 	);

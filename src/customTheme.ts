@@ -25,6 +25,14 @@ const customTheme = createTheme({
 	},
 	shape: { borderRadius: 12 },
 	components: {
+		// MuiCssBaseline: {
+		// 	styleOverrides: `
+		// 		body { // does not work
+		// 			background-color: #292b2e !important;
+		// 			color: #fff;
+		// 		}
+		// 	`,
+		// },
 		MuiButton: {
 			styleOverrides: {
 				root: {

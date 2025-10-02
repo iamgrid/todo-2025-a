@@ -45,6 +45,8 @@ const EditTodoForm = styled("form")({
 	gap: "8px 16px",
 	alignItems: "start",
 	width: "100%",
+	marginTop: "2px",
+	marginBottom: "2px",
 });
 
 const EditTodoFormButtonWrapper = styled("div")({
