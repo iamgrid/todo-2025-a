@@ -39,6 +39,8 @@ export default function AddTodoForm({
 	] = useState<number>(0);
 	const doesUserHaveAProperMouse = useMatchMedia("(pointer:fine)");
 
+	console.log("AddTodoForm rendered");
+
 	function handleTodoInputChange(newValue: string) {
 		const trimmedValue = newValue.trim();
 		if (trimmedValue.length === 0) {
@@ -80,6 +82,9 @@ export default function AddTodoForm({
 			);
 			return;
 		}
+		// const newTodoField = {
+		// 	value: "",
+		// };
 
 		const newTodoText = newTodoField.value.trim();
 

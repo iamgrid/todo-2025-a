@@ -1,13 +1,13 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { friendlyDate, shortDateFormat, shortenPhrase } from "./helpers.tsx";
 
 describe("shortDateFormat", () => {
-	test("formats date years in the past correctly", () => {
+	it("formats date years in the past correctly", () => {
 		const date = new Date("2023-10-05T12:34:56Z");
 		expect(shortDateFormat(date)).toBe("Oct 5, 2023");
 	});
 
-	test("formats current year dates correctly", () => {
+	it("formats current year dates correctly", () => {
 		const nowDateObj = new Date();
 		const currentYearDate = new Date(
 			nowDateObj.getFullYear(),
@@ -17,7 +17,7 @@ describe("shortDateFormat", () => {
 		expect(shortDateFormat(currentYearDate)).toBe(`Jun 15`);
 	});
 
-	test("formats date years in the future correctly", () => {
+	it("formats date years in the future correctly", () => {
 		const nowDateObj = new Date();
 		const futureYearDate = new Date(
 			nowDateObj.getFullYear() + 1,
@@ -32,17 +32,17 @@ describe("shortDateFormat", () => {
 
 describe("friendlyDate", () => {
 	const invalidDateResponse = "[invalid date]";
-	test("invalid date string", () => {
+	it("invalid date string", () => {
 		expect(friendlyDate("invalid-date-string")).toBe(invalidDateResponse);
 	});
 
-	test("invalid Date object", () => {
+	it("invalid Date object", () => {
 		expect(friendlyDate(new Date("invalid-date-string"))).toBe(
 			invalidDateResponse
 		);
 	});
 
-	test("a date 3 days in the future", () => {
+	it("a date 3 days in the future", () => {
 		const now = new Date();
 		const threeDaysFromNow = new Date(
 			now.getTime() + 3 * 24 * 60 * 60 * 1000
@@ -55,16 +55,16 @@ describe("friendlyDate", () => {
 		expect(friendlyDate(threeDaysFromNow)).toBe(expectedDateStr);
 	});
 
-	test("a date 5 days in the past", () => {
+	it("a date 5 days in the past", () => {
 		const now = new Date();
 		const fiveDaysAgo = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
 
 		const expectedDateStr = `${shortDateFormat(fiveDaysAgo)} (5 days ago)`;
-		console.log({ expectedDateStr });
+		// console.log({ expectedDateStr });
 		expect(friendlyDate(fiveDaysAgo)).toBe(expectedDateStr);
 	});
 
-	test("a date 2 hours in the past", () => {
+	it("a date 2 hours in the past", () => {
 		const now = new Date();
 		const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
 
@@ -73,7 +73,7 @@ describe("friendlyDate", () => {
 		);
 	});
 
-	test("a date 2 hours in the future", () => {
+	it("a date 2 hours in the future", () => {
 		const now = new Date();
 		const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000);
 		expect(friendlyDate(twoHoursFromNow)).toBe(
@@ -81,13 +81,13 @@ describe("friendlyDate", () => {
 		);
 	});
 
-	test("a date 1 hour in the future", () => {
+	it("a date 1 hour in the future", () => {
 		const now = new Date();
 		const oneHourFromNow = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 		expect(friendlyDate(oneHourFromNow)).toBe(`1 hour from now`);
 	});
 
-	test("a date yesterday, 25 hours ago", () => {
+	it("a date yesterday, 25 hours ago", () => {
 		const now = new Date();
 		const yesterday = new Date(now.getTime() - 25 * 60 * 60 * 1000);
 		expect(friendlyDate(yesterday)).toBe(
@@ -97,31 +97,31 @@ describe("friendlyDate", () => {
 });
 
 describe("shortenPhrase", () => {
-	test("shortens a long phrase", () => {
+	it("shortens a long phrase", () => {
 		const input = "This is a long phrase that needs to be shortened.";
 		const maxLength = 30;
 		const result = shortenPhrase(input, maxLength);
 		expect(result).toBe("This is a long phrase ...");
 	});
 
-	test("does not shorten a short phrase", () => {
+	it("does not shorten a short phrase", () => {
 		const input = "Short phrase.";
 		const maxLength = 30;
 		const result = shortenPhrase(input, maxLength);
 		expect(result).toBe(input);
 	});
 
-	test("handles undefined input", () => {
+	it("handles undefined input", () => {
 		const result = shortenPhrase(undefined, 30);
 		expect(result).toBe("-");
 	});
 
-	test("handles null input", () => {
+	it("handles null input", () => {
 		const result = shortenPhrase(null, 30);
 		expect(result).toBe("-");
 	});
 
-	test("handles false input", () => {
+	it("handles false input", () => {
 		const result = shortenPhrase(false, 30);
 		expect(result).toBe("-");
 	});
