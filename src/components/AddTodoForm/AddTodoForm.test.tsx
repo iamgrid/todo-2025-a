@@ -46,8 +46,7 @@ describe("AddTodoForm", () => {
 
 		expect(
 			screen.getByText(
-				TODO_TITLE_LENGTH_ERROR_MESSAGE +
-					` (You are over by 2 characters.)`
+				`${TODO_TITLE_LENGTH_ERROR_MESSAGE} (You are over by 2 characters.)`
 			)
 		).toBeInTheDocument();
 	});
