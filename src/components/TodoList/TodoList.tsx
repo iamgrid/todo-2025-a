@@ -31,7 +31,6 @@ export interface TTodoListProps {
 
 const TopFunctionsBar = styled("div")({
 	display: "flex",
-	// break lines if there isn't enough space
 	flexWrap: "wrap",
 	alignItems: "center",
 	marginTop: "24px",
@@ -48,7 +47,6 @@ export default function TodoList({
 	handleDeleteTodo,
 	handleEditedTodoSubmission,
 }: TTodoListProps) {
-	// const triggerFriendlyDateRerender = useRef<number>(0);
 	const [triggerFriendlyDateRerender, setTriggerFriendlyDateRerender] =
 		useState<number>(0);
 	const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>(false);

@@ -21,9 +21,28 @@ export const FILTERING_OPTIONS = {
 
 export type TFilteringOption = keyof typeof FILTERING_OPTIONS;
 
-export function sum(a: number, b: number): number {
-	const re: number = a + b;
-	return re;
+export const shortMonthNames = [
+	"Jan",
+	"Feb",
+	"Mar",
+	"Apr",
+	"May",
+	"Jun",
+	"Jul",
+	"Aug",
+	"Sep",
+	"Oct",
+	"Nov",
+	"Dec",
+];
+
+export function shortDateFormat(date: Date): string {
+	const yearStr = `, ${date.getFullYear()}`;
+	const nowDateObj = new Date();
+	const addYearStr: boolean = date.getFullYear() !== nowDateObj.getFullYear();
+	return `${shortMonthNames[date.getMonth()]} ${date.getDate()}${
+		addYearStr ? yearStr : ""
+	}`;
 }
 
 /**
@@ -39,20 +58,6 @@ export function friendlyDate(input: string | Date): string {
 	}
 
 	let reply = "";
-	const shortMonths = [
-		"Jan",
-		"Feb",
-		"Mar",
-		"Apr",
-		"May",
-		"Jun",
-		"Jul",
-		"Aug",
-		"Sep",
-		"Oct",
-		"Nov",
-		"Dec",
-	];
 
 	const ts = inputDateObj.getTime() / 1000;
 	const nowObj = new Date();
@@ -64,9 +69,7 @@ export function friendlyDate(input: string | Date): string {
 			}-${nowObj.getDate()} 00:00:00`
 		) / 1000; // timestamp for 00:00:00 of today
 
-	let strDate = `${
-		shortMonths[inputDateObj.getMonth()]
-	} ${inputDateObj.getDate()}`;
+	let strDate = `${shortDateFormat(inputDateObj)}`;
 	if (inputDateObj.getFullYear() !== nowObj.getFullYear()) {
 		strDate = `${strDate}, ${inputDateObj.getFullYear()}`;
 	}
@@ -107,7 +110,7 @@ export function friendlyDate(input: string | Date): string {
 	} else if (diff < 2 * 60 * 60) {
 		reply = "1 hour ago";
 	} else if (diff <= 24 * 60 * 60) {
-		reply = Math.floor(diff / (60 * 60)) + " hours ago";
+		reply = Math.floor(diff / (60 * 60)) + " hours ago (" + strDate + ")";
 	} else if (
 		diff > 24 * 60 * 60 &&
 		ts < zerohourToday &&
