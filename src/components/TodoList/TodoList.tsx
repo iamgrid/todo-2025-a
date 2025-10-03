@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import List from "@mui/material/List";
 
@@ -10,6 +10,7 @@ import TodoListItem from "../TodoList/TodoListItem.tsx";
 import AlertDialog from "../shared/AlertDialog.tsx";
 import {
 	FILTERING_OPTIONS,
+	FRIENDLY_DATE_RERENDER_INTERVAL_MS,
 	shortenPhrase,
 	SORTING_OPTIONS,
 	type TFilteringOption,
@@ -47,6 +48,9 @@ export default function TodoList({
 	handleDeleteTodo,
 	handleEditedTodoSubmission,
 }: TTodoListProps) {
+	// const triggerFriendlyDateRerender = useRef<number>(0);
+	const [triggerFriendlyDateRerender, setTriggerFriendlyDateRerender] =
+		useState<number>(0);
 	const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>(false);
 	const [todoIdToDelete, setTodoIdToDelete] = useState<number | null>(null);
 	const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
@@ -112,6 +116,16 @@ export default function TodoList({
 		return sortedTodos;
 	}, [todos, currentSortingOption, currentFilteringOption]);
 
+	useEffect(() => {
+		const functionSignature =
+			"TodoList.tsx@rerender FriendlyDates useEffect()";
+		const interval = setInterval(() => {
+			setTriggerFriendlyDateRerender((prev) => prev + 1);
+			console.log(functionSignature, "triggered");
+		}, FRIENDLY_DATE_RERENDER_INTERVAL_MS);
+		return () => clearInterval(interval);
+	}, []);
+
 	function handleDeleteTodoProper(todoId: number) {
 		setIsAlertDialogOpen(true);
 		setTodoIdToDelete(todoId);
@@ -164,6 +178,9 @@ export default function TodoList({
 								handleEditedTodoSubmissionProper
 							}
 							handleCancelEditing={handleCancelEditing}
+							triggerFriendlyDateRerender={
+								triggerFriendlyDateRerender
+							}
 						/>
 					);
 				})}

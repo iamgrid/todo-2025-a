@@ -69,6 +69,7 @@ export interface TTodoListItemProps {
 		newText: string
 	): void;
 	handleCancelEditing(): void;
+	triggerFriendlyDateRerender: number;
 }
 
 export default function TodoListItem({
@@ -79,6 +80,7 @@ export default function TodoListItem({
 	handleEditTodo,
 	handleEditedTodoSubmissionProper,
 	handleCancelEditing,
+	triggerFriendlyDateRerender,
 }: TTodoListItemProps) {
 	const [editTodoInputIsValid, setEditTodoInputIsValid] =
 		useState<boolean>(true);
@@ -121,7 +123,11 @@ export default function TodoListItem({
 		if (todo.completedAt !== null) {
 			parts.push(
 				<>
-					Completed <FriendlyDate input={todo.completedAt} />
+					Completed{" "}
+					<FriendlyDate
+						input={todo.completedAt}
+						triggerRerender={triggerFriendlyDateRerender}
+					/>
 				</>
 			);
 		}
@@ -129,14 +135,22 @@ export default function TodoListItem({
 		if (todo.lastUpdatedAt !== null) {
 			parts.push(
 				<>
-					Last updated <FriendlyDate input={todo.lastUpdatedAt} />
+					Last updated{" "}
+					<FriendlyDate
+						input={todo.lastUpdatedAt}
+						triggerRerender={triggerFriendlyDateRerender}
+					/>
 				</>
 			);
 		}
 
 		parts.push(
 			<>
-				Created <FriendlyDate input={todo.createdAt} />
+				Created{" "}
+				<FriendlyDate
+					input={todo.createdAt}
+					triggerRerender={triggerFriendlyDateRerender}
+				/>
 			</>
 		);
 
