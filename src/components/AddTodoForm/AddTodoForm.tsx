@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -8,13 +8,13 @@ import styled from "@emotion/styled";
 
 import {
 	MAX_TODO_TITLE_LENGTH,
-	NEW_TODO_INPUT_FIELD_ID,
 	TODO_TITLE_LENGTH_ERROR_MESSAGE,
 } from "./../../helpers.tsx";
 import { useMatchMedia } from "../shared/useMatchMedia.tsx";
 
 interface TAddTodoFormProps {
 	handleAddTodo(newTodoText: string): void;
+	newTodoInputFieldId: string;
 	focusNewTodoInputField(): void;
 }
 
@@ -30,16 +30,16 @@ const CustomForm = styled("form")({
 
 export default function AddTodoForm({
 	handleAddTodo,
+	newTodoInputFieldId,
 	focusNewTodoInputField,
 }: TAddTodoFormProps) {
+	const formId = useId();
 	const [todoInputIsValid, setTodoInputIsValid] = useState<boolean>(true);
 	const [
 		todoInputValueIsOverMaxLengthBy,
 		setTodoInputValueIsOverMaxLengthBy,
 	] = useState<number>(0);
 	const doesUserHaveAProperMouse = useMatchMedia("(pointer:fine)");
-
-	console.log("AddTodoForm rendered");
 
 	function handleTodoInputChange(newValue: string) {
 		const trimmedValue = newValue.trim();
@@ -64,29 +64,50 @@ export default function AddTodoForm({
 	) {
 		const functionSignature = "App.tsx@handleNewTodoFormSubmission()";
 
+		let formElement: HTMLFormElement | null = null;
+
 		if (event !== null) {
 			event.preventDefault();
+			formElement = event.currentTarget;
+		} else {
+			formElement = document.getElementById(
+				formId
+			) as HTMLFormElement | null;
 		}
 
 		if (!todoInputIsValid) {
 			return;
 		}
 
-		const newTodoField = document.getElementById(
-			NEW_TODO_INPUT_FIELD_ID
-		) as HTMLInputElement | null;
-		if (newTodoField === null) {
+		if (formElement === null) {
 			console.error(
 				functionSignature,
-				"Could not find new todo input field in the DOM!"
+				"Could not find form element in DOM!"
 			);
 			return;
 		}
-		// const newTodoField = {
-		// 	value: "",
-		// };
 
-		const newTodoText = newTodoField.value.trim();
+		const formData = new FormData(formElement);
+
+		for (const [key, value] of formData.entries()) {
+			console.log(
+				functionSignature,
+				`Form data entry: ${key} = ${value}`
+			);
+		}
+
+		if (!formData.has(newTodoInputFieldId)) {
+			console.error(
+				functionSignature,
+				`Form data does not have expected field with ID '${newTodoInputFieldId}'!`,
+				formData.entries()
+			);
+			return;
+		}
+
+		const newTodoText = (
+			formData.get(newTodoInputFieldId) as string
+		).trim();
 
 		if (newTodoText.length === 0) {
 			console.warn(
@@ -99,7 +120,8 @@ export default function AddTodoForm({
 
 		handleAddTodo(newTodoText);
 
-		newTodoField.value = "";
+		formElement.reset();
+
 		setTodoInputIsValid(true);
 		setTodoInputValueIsOverMaxLengthBy(0);
 
@@ -115,9 +137,11 @@ export default function AddTodoForm({
 				handleNewTodoFormSubmission(event);
 			}}
 			data-joy-color-scheme="dark"
+			id={formId}
 		>
 			<TextField
-				id={NEW_TODO_INPUT_FIELD_ID}
+				id={newTodoInputFieldId}
+				name={newTodoInputFieldId}
 				label="Add New Todo"
 				variant="outlined"
 				fullWidth
@@ -164,7 +188,7 @@ export default function AddTodoForm({
 				}}
 				onBlur={() => {
 					const newTodoInputField = document.getElementById(
-						NEW_TODO_INPUT_FIELD_ID
+						newTodoInputFieldId
 					) as HTMLInputElement | null;
 					if (newTodoInputField !== null) {
 						if (newTodoInputField.value.trim().length === 0) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 import type { TTodo } from "../../todoStore";
 
 import ListItem from "@mui/material/ListItem";
@@ -82,6 +82,8 @@ export default function TodoListItem({
 	handleCancelEditing,
 	triggerFriendlyDateRerender,
 }: TTodoListItemProps) {
+	const editTodoInputFormId = useId();
+	const editTodoInputFieldId = useId();
 	const [editTodoInputIsValid, setEditTodoInputIsValid] =
 		useState<boolean>(true);
 	const [
@@ -93,28 +95,50 @@ export default function TodoListItem({
 		event: React.FormEvent<HTMLFormElement> | null = null
 	) {
 		const functionSignature = "TodoListItem.tsx@handleEditFormSubmit()";
+
+		let formElement: HTMLFormElement | null = null;
 		if (event !== null) {
 			event.preventDefault();
+			formElement = event.currentTarget;
+		} else {
+			formElement = document.getElementById(
+				editTodoInputFormId
+			) as HTMLFormElement;
 		}
 
 		if (!editTodoInputIsValid) {
 			return;
 		}
 
-		const inputEl = document.getElementById(
-			`edit-todo-form__input-${todo.id}`
-		) as HTMLInputElement;
-		if (inputEl) {
-			const newText = inputEl.value.trim();
-			if (newText.length > 0) {
-				handleEditedTodoSubmissionProper(todo.id, newText);
-			}
-		} else {
+		if (formElement === null) {
 			console.error(
 				functionSignature,
-				"Could not find edit input element!"
+				"Could not find edit todo form element in the DOM!"
 			);
+			return;
 		}
+
+		const formData = new FormData(formElement);
+
+		if (!formData.has(editTodoInputFieldId)) {
+			console.error(
+				functionSignature,
+				`Form data does not have expected field ${editTodoInputFieldId}!`
+			);
+			return;
+		}
+
+		const newText = (formData.get(editTodoInputFieldId) as string).trim();
+
+		if (newText.length === 0) {
+			console.warn(
+				functionSignature,
+				"New todo text is empty after trimming whitespace!"
+			);
+			return;
+		}
+
+		handleEditedTodoSubmissionProper(todo.id, newText);
 	}
 
 	function renderSecondaryText() {
@@ -238,13 +262,15 @@ export default function TodoListItem({
 					}}
 					noValidate
 					autoComplete="off"
+					id={editTodoInputFormId}
 				>
 					<TextField
 						fullWidth
 						variant="outlined"
 						defaultValue={todo.text}
 						autoFocus
-						id={`edit-todo-form__input-${todo.id}`}
+						id={editTodoInputFieldId}
+						name={editTodoInputFieldId}
 						slotProps={{
 							input: {
 								"aria-label": "Edit Todo",

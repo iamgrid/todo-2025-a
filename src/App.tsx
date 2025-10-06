@@ -1,4 +1,11 @@
-import { useState, useReducer, useEffect, useMemo } from "react";
+import {
+	useState,
+	useReducer,
+	useEffect,
+	useMemo,
+	useId,
+	useCallback,
+} from "react";
 import {
 	todoStoreReducer,
 	initialTodoStoreState,
@@ -19,7 +26,6 @@ import { styled } from "@mui/material/styles";
 import customTheme from "./customTheme.ts";
 
 import TodoList from "./components/TodoList/TodoList.tsx";
-import { NEW_TODO_INPUT_FIELD_ID } from "./helpers.tsx";
 import AlertDialog from "./components/shared/AlertDialog.tsx";
 import AddTodoForm from "./components/AddTodoForm/AddTodoForm.tsx";
 
@@ -36,6 +42,7 @@ const MainWrapper = styled("div")(({ theme }) => ({
 }));
 
 function App() {
+	const newTodoInputFieldId = useId();
 	const [todoStoreState, todoStoreDispatch] = useReducer(
 		todoStoreReducer,
 		initialTodoStoreState
@@ -57,6 +64,40 @@ function App() {
 
 	const [isSnackbarOpen, setIsSnackbarOpen] = useState<boolean>(false);
 	const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+
+	const {
+		noOfTodos,
+		noOfIncompleteTodos,
+		noOfCompletedTodos,
+	}: {
+		noOfTodos: number;
+		noOfIncompleteTodos: number;
+		noOfCompletedTodos: number;
+	} = useMemo(() => {
+		const noOfTodos = todoStoreState.todos.length;
+		const noOfIncompleteTodos = todoStoreState.todos.filter(
+			(todo) => !todo.isCompleted
+		).length;
+		const noOfCompletedTodos = noOfTodos - noOfIncompleteTodos;
+
+		return { noOfTodos, noOfIncompleteTodos, noOfCompletedTodos };
+	}, [todoStoreState.todos]);
+
+	const focusNewTodoInputField = useCallback(() => {
+		const functionSignature = "App.tsx@focusNewTodoInputField()";
+
+		const newTodoInputField = document.getElementById(
+			newTodoInputFieldId
+		) as HTMLInputElement | null;
+		if (newTodoInputField !== null) {
+			newTodoInputField.focus();
+		} else {
+			console.error(
+				functionSignature,
+				"Could not find new todo input field in the DOM!"
+			);
+		}
+	}, [newTodoInputFieldId]);
 
 	useEffect(() => {
 		const functionSignature = "App.tsx@component mounted useEffect()";
@@ -114,41 +155,7 @@ function App() {
 			// Cleanup if needed when component unmounts
 			window.removeEventListener("keydown", keyDownHandler);
 		};
-	}, []);
-
-	const {
-		noOfTodos,
-		noOfIncompleteTodos,
-		noOfCompletedTodos,
-	}: {
-		noOfTodos: number;
-		noOfIncompleteTodos: number;
-		noOfCompletedTodos: number;
-	} = useMemo(() => {
-		const noOfTodos = todoStoreState.todos.length;
-		const noOfIncompleteTodos = todoStoreState.todos.filter(
-			(todo) => !todo.isCompleted
-		).length;
-		const noOfCompletedTodos = noOfTodos - noOfIncompleteTodos;
-
-		return { noOfTodos, noOfIncompleteTodos, noOfCompletedTodos };
-	}, [todoStoreState.todos]);
-
-	function focusNewTodoInputField() {
-		const functionSignature = "App.tsx@focusNewTodoInputField()";
-
-		const newTodoInputField = document.getElementById(
-			NEW_TODO_INPUT_FIELD_ID
-		) as HTMLInputElement | null;
-		if (newTodoInputField !== null) {
-			newTodoInputField.focus();
-		} else {
-			console.error(
-				functionSignature,
-				"Could not find new todo input field in the DOM!"
-			);
-		}
-	}
+	}, [focusNewTodoInputField]);
 
 	function handleAddTodo(newTodoText: string) {
 		todoStoreDispatch({
@@ -193,6 +200,7 @@ function App() {
 				</Box>
 				<AddTodoForm
 					handleAddTodo={handleAddTodo}
+					newTodoInputFieldId={newTodoInputFieldId}
 					focusNewTodoInputField={focusNewTodoInputField}
 				/>
 				<MainWrapper>
