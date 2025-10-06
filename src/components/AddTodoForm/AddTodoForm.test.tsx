@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { it, expect, vi, beforeEach } from "vitest";
+import { it, expect, vi, beforeEach, afterEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import AddTodoForm from "./AddTodoForm";
 import {
@@ -8,7 +8,7 @@ import {
 } from "../../helpers";
 
 beforeEach(() => {
-	// @ts-expect-error - matchMedia is not implemented in jsdom
+	// @ts-expect-error - matchMedia is not implemented by jsdom
 	vi.spyOn(window, "matchMedia").mockImplementation((query) => {
 		return {
 			matches: query === "(pointer:fine)" ? true : false,
@@ -16,6 +16,10 @@ beforeEach(() => {
 			removeEventListener: vi.fn(),
 		};
 	});
+});
+
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 const newTodoInputFieldId = "test-new-todo-input-field-id";
