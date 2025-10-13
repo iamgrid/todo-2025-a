@@ -46,18 +46,21 @@ export default function FilterListButtons({
 					}
 				}}
 			>
-				<ToggleButton value={FILTERING_OPTIONS.all} aria-label="All">
+				<ToggleButton
+					value={FILTERING_OPTIONS.all}
+					aria-label={`All (${noOfTodos})`}
+				>
 					All ({noOfTodos})
 				</ToggleButton>
 				<ToggleButton
 					value={FILTERING_OPTIONS.incomplete}
-					aria-label="Incomplete"
+					aria-label={`Incomplete (${noOfIncompleteTodos})`}
 				>
 					Incomplete ({noOfIncompleteTodos})
 				</ToggleButton>
 				<ToggleButton
 					value={FILTERING_OPTIONS.completed}
-					aria-label="Completed"
+					aria-label={`Completed (${noOfCompletedTodos})`}
 				>
 					Completed ({noOfCompletedTodos})
 				</ToggleButton>

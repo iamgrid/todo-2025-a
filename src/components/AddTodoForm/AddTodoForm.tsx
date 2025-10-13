@@ -89,12 +89,12 @@ export default function AddTodoForm({
 
 		const formData = new FormData(formElement);
 
-		for (const [key, value] of formData.entries()) {
-			console.log(
-				functionSignature,
-				`Form data entry: ${key} = ${value}`
-			);
-		}
+		// for (const [key, value] of formData.entries()) {
+		// 	console.log(
+		// 		functionSignature,
+		// 		`Form data entry: ${key} = ${value}`
+		// 	);
+		// }
 
 		if (!formData.has(newTodoInputFieldId)) {
 			console.error(

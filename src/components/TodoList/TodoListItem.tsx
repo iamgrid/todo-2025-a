@@ -217,7 +217,10 @@ export default function TodoListItem({
 							tabIndex={-1}
 							checked={todo.isCompleted}
 							slotProps={{
-								input: { "aria-labelledby": labelId },
+								input: {
+									"aria-label": "Todo completion checkbox",
+									"aria-labelledby": labelId,
+								},
 							}}
 						/>
 					</ListItemIcon>
@@ -233,7 +236,8 @@ export default function TodoListItem({
 					<Tooltip title="Edit this todo" placement="top" arrow>
 						<IconButton
 							edge="end"
-							aria-label="edit"
+							aria-label="Edit this todo"
+							name="Edit this todo"
 							onClick={(event) => {
 								event.stopPropagation();
 								handleEditTodo(todo.id);
@@ -245,7 +249,8 @@ export default function TodoListItem({
 					<Tooltip title="Delete this todo" placement="top" arrow>
 						<IconButton
 							edge="end"
-							aria-label="delete"
+							aria-label="Delete this todo"
+							name="Delete this todo"
 							onClick={(event) => {
 								event.stopPropagation();
 								handleDeleteTodoProper(todo.id);
@@ -317,6 +322,8 @@ export default function TodoListItem({
 					<EditTodoFormButtonWrapper>
 						<Button
 							type="submit"
+							aria-label="Save edited todo"
+							name="Save edited todo"
 							variant="contained"
 							color="primary"
 							startIcon={<SaveIcon />}
@@ -325,6 +332,8 @@ export default function TodoListItem({
 							Save
 						</Button>
 						<Button
+							aria-label="Cancel editing todo"
+							name="Cancel editing todo"
 							variant="outlined"
 							color="primary"
 							startIcon={<CancelIcon />}
