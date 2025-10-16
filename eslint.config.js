@@ -11,6 +11,7 @@ export default tseslint.config([
 	globalIgnores(["dist"]),
 	{
 		files: ["**/*.{ts,tsx}"],
+		include: ["src"],
 		extends: [
 			js.configs.recommended,
 			tseslint.configs.recommendedTypeChecked,
