@@ -102,4 +102,91 @@ test.describe("Todo App", () => {
 
 		await expect(secondTodo).toHaveText(/updated second todo.*/i);
 	});
+
+	test("can delete a todo", async ({ page }) => {
+		const allTodos = page.getByRole("listitem");
+
+		await expect(allTodos).toHaveCount(0);
+
+		await _addTodos(page);
+
+		await expect(allTodos).toHaveCount(4);
+
+		await page.getByRole("button", { name: /oldest first/i }).click();
+
+		await expect(allTodos.nth(2)).toHaveText(/third todo.*/i);
+
+		const thirdTodo = allTodos.nth(2);
+		await thirdTodo.getByRole("button", { name: /delete/i }).click();
+
+		await expect(
+			page.getByText(/you are about to delete the following.*/i)
+		).toBeVisible();
+		await page.getByRole("button", { name: /^delete todo$/i }).click();
+
+		await expect(allTodos).toHaveCount(3);
+		await expect(allTodos.nth(2)).not.toHaveText(/third todo.*/i);
+	});
+
+	test("can clear completed todos using the appropriate button", async ({
+		page,
+	}) => {
+		const allTodos = page.getByRole("listitem");
+
+		await expect(allTodos).toHaveCount(0);
+
+		await _addTodos(page);
+
+		await expect(allTodos).toHaveCount(4);
+
+		await page.getByRole("button", { name: /oldest first/i }).click();
+
+		const firstTodoCheckbox = allTodos.nth(0).getByRole("checkbox");
+		const secondTodoCheckbox = allTodos.nth(1).getByRole("checkbox");
+
+		await firstTodoCheckbox.check();
+		await secondTodoCheckbox.check();
+
+		await expect(firstTodoCheckbox).toBeChecked();
+		await expect(secondTodoCheckbox).toBeChecked();
+
+		await page.getByRole("button", { name: /clear completed/i }).click();
+
+		await expect(
+			page.getByText(
+				/you are about to permanently delete 2 completed todos.*/i
+			)
+		).toBeVisible();
+		await page.getByRole("button", { name: /^clear completed$/i }).click();
+
+		await expect(allTodos).toHaveCount(2);
+		await expect(allTodos.nth(0)).toHaveText(/third todo.*/i);
+		await expect(allTodos.nth(1)).toHaveText(/fourth todo.*/i);
+	});
+
+	test("can complete all todos using the appropriate button", async ({
+		page,
+	}) => {
+		const allTodos = page.getByRole("listitem");
+
+		await expect(allTodos).toHaveCount(0);
+
+		await _addTodos(page);
+
+		await expect(allTodos).toHaveCount(4);
+
+		await page.getByRole("button", { name: /complete all/i }).click();
+
+		await expect(
+			page.getByText(
+				/you are about to mark 4 incomplete todos as completed.*/i
+			)
+		).toBeVisible();
+		await page.getByRole("button", { name: /^complete all$/i }).click();
+
+		await expect(allTodos.nth(0).getByRole("checkbox")).toBeChecked();
+		await expect(allTodos.nth(1).getByRole("checkbox")).toBeChecked();
+		await expect(allTodos.nth(2).getByRole("checkbox")).toBeChecked();
+		await expect(allTodos.nth(3).getByRole("checkbox")).toBeChecked();
+	});
 });
