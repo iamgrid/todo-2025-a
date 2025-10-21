@@ -14,15 +14,18 @@ export interface TTodo extends TNewTodo {
 
 export interface TTodoStoreState {
 	todoIdIterator: number;
+	isLocalStorageAvailable: boolean;
 	todos: TTodo[];
 }
 
 export const initialTodoStoreState: TTodoStoreState = {
 	todoIdIterator: 1,
+	isLocalStorageAvailable: true,
 	todos: [],
 };
 
 export const TTodoStoreActionTypes = {
+	SET_LOCAL_STORAGE_AVAILABILITY: "SET_LOCAL_STORAGE_AVAILABILITY",
 	ADD_TODO: "ADD_TODO",
 	UPDATE_TODO_TEXT_CONTENT: "UPDATE_TODO_TEXT_CONTENT",
 	UPDATE_TODO_COMPLETION_STATUS: "UPDATE_TODO_COMPLETION_STATUS",
@@ -33,6 +36,10 @@ export const TTodoStoreActionTypes = {
 } as const;
 
 export type TTodoStoreAction =
+	| {
+			type: typeof TTodoStoreActionTypes.SET_LOCAL_STORAGE_AVAILABILITY;
+			payload: { isLocalStorageAvailable: boolean };
+	  }
 	| { type: typeof TTodoStoreActionTypes.ADD_TODO; payload: TNewTodo }
 	| {
 			type: typeof TTodoStoreActionTypes.UPDATE_TODO_TEXT_CONTENT;
@@ -66,6 +73,12 @@ export function todoStoreReducer(
 	const functionSignature = "todoStore.ts@todoStoreReducer()";
 
 	switch (action.type) {
+		case TTodoStoreActionTypes.SET_LOCAL_STORAGE_AVAILABILITY: {
+			return {
+				...state,
+				isLocalStorageAvailable: action.payload.isLocalStorageAvailable,
+			};
+		}
 		case TTodoStoreActionTypes.ADD_TODO: {
 			const nowDateObj = new Date();
 			const nowIsoString = nowDateObj.toISOString();
@@ -173,6 +186,7 @@ export function todoStoreReducer(
 			});
 
 			return {
+				...state,
 				todos: [...action.payload],
 				todoIdIterator: highestId + 1,
 			};
@@ -246,6 +260,14 @@ function updateLocalStorage(
 	todosToClear?: number[]
 ) {
 	const functionSignature = "todoStore.ts@updateLocalStorage()";
+
+	if (!updatedAppState.isLocalStorageAvailable) {
+		console.info(
+			functionSignature,
+			"localStorage is not available, returning early..."
+		);
+		return;
+	}
 
 	switch (action.type) {
 		case TTodoStoreActionTypes.ADD_TODO: {

@@ -41,6 +41,8 @@ const MainWrapper = styled("div")(({ theme }) => ({
 	boxShadow: "0 0 5px 3px rgba(80, 116, 152, .7)",
 }));
 
+let hasAppBeenInitialized: boolean = false;
+
 function App() {
 	const newTodoInputFieldId = useId();
 	const [todoStoreState, todoStoreDispatch] = useReducer(
@@ -99,45 +101,103 @@ function App() {
 		}
 	}, [newTodoInputFieldId]);
 
+	// const focusNewTodoInputField = useEffectEvent(() => {
+	// 	const functionSignature = "App.tsx@focusNewTodoInputField()";
+
+	// 	const newTodoInputField = document.getElementById(
+	// 		newTodoInputFieldId
+	// 	) as HTMLInputElement | null;
+	// 	if (newTodoInputField !== null) {
+	// 		newTodoInputField.focus();
+	// 	} else {
+	// 		console.error(
+	// 			functionSignature,
+	// 			"Could not find new todo input field in the DOM!"
+	// 		);
+	// 	}
+	// });
+
 	useEffect(() => {
 		const functionSignature = "App.tsx@component mounted useEffect()";
 
-		// Load user data from localStorage
-		const todosFromLocalStorageResponse =
-			getAllTodoObjectsFromLocalStorage();
-
-		console.log(
-			functionSignature,
-			"todosFromLocalStorageResponse:",
-			todosFromLocalStorageResponse
-		);
-
-		if (todosFromLocalStorageResponse !== null) {
+		if (hasAppBeenInitialized) {
 			console.log(
 				functionSignature,
-				"localStorage contained todos for this user, updating state..."
+				"App has already been initialized, skipping..."
 			);
+			return;
+		}
+		hasAppBeenInitialized = true;
 
-			todoStoreDispatch({
-				type: TTodoStoreActionTypes.LOAD_USER_DATA_FROM_LOCAL_STORAGE,
-				payload: todosFromLocalStorageResponse.validTodos,
-			});
+		console.log(functionSignature, "App initializing...");
 
-			if (todosFromLocalStorageResponse.invalidTodoKeys.length > 0) {
-				setCorruptedLSTodoKeys([
-					...todosFromLocalStorageResponse.invalidTodoKeys,
-				]);
-				setIsCorruptedLSTodosAlertDialogOpen(true);
-			}
+		// throw Error("Test error for ErrorBoundary");
 
+		// Check if localStorage is available
+		let isLocalStorageAvailable = true;
+		try {
+			const testKey = "__storage_test__";
+			localStorage.setItem(testKey, testKey);
+			localStorage.removeItem(testKey);
+			console.log(
+				functionSignature,
+				"localStorage is available for use."
+			);
+		} catch (e) {
+			console.warn(functionSignature, "localStorage is not available.");
+			isLocalStorageAvailable = false;
+		}
+
+		if (!isLocalStorageAvailable) {
 			setSnackbarMessage(
-				`${todosFromLocalStorageResponse.validTodos.length} todo${
-					todosFromLocalStorageResponse.validTodos.length === 1
-						? ""
-						: "s"
-				} were restored from localStorage.`
+				"Warning: localStorage looks to be disabled in your browser. Your todos will not be saved between sessions."
 			);
 			setIsSnackbarOpen(true);
+
+			todoStoreDispatch({
+				type: TTodoStoreActionTypes.SET_LOCAL_STORAGE_AVAILABILITY,
+				payload: { isLocalStorageAvailable: false },
+			});
+		} else {
+			// Load user data from localStorage
+			const todosFromLocalStorageResponse =
+				getAllTodoObjectsFromLocalStorage();
+
+			console.log(
+				functionSignature,
+				"todosFromLocalStorageResponse:",
+				todosFromLocalStorageResponse
+			);
+
+			if (todosFromLocalStorageResponse !== null) {
+				console.log(
+					functionSignature,
+					"localStorage contained todos for this user, updating state..."
+				);
+
+				todoStoreDispatch({
+					type: TTodoStoreActionTypes.LOAD_USER_DATA_FROM_LOCAL_STORAGE,
+					payload: todosFromLocalStorageResponse.validTodos,
+				});
+
+				if (todosFromLocalStorageResponse.invalidTodoKeys.length > 0) {
+					setCorruptedLSTodoKeys([
+						...todosFromLocalStorageResponse.invalidTodoKeys,
+					]);
+					setIsCorruptedLSTodosAlertDialogOpen(true);
+				}
+
+				setSnackbarMessage(
+					`Restored ${
+						todosFromLocalStorageResponse.validTodos.length
+					} todo${
+						todosFromLocalStorageResponse.validTodos.length === 1
+							? ""
+							: "s"
+					} from localStorage.`
+				);
+				setIsSnackbarOpen(true);
+			}
 		}
 
 		const keyDownHandler = (event: KeyboardEvent) => {
