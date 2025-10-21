@@ -10,7 +10,7 @@ import {
 	MAX_TODO_TITLE_LENGTH,
 	TODO_TITLE_LENGTH_ERROR_MESSAGE,
 } from "./../../helpers.tsx";
-import { useMatchMedia } from "../shared/useMatchMedia.tsx";
+import { useDoesUserHaveAProperMouse } from "../shared/useDoesUserHaveAProperMouse.tsx";
 
 interface TAddTodoFormProps {
 	handleAddTodo(newTodoText: string): void;
@@ -39,7 +39,7 @@ export default function AddTodoForm({
 		todoInputValueIsOverMaxLengthBy,
 		setTodoInputValueIsOverMaxLengthBy,
 	] = useState<number>(0);
-	const doesUserHaveAProperMouse = useMatchMedia("(pointer:fine)");
+	const doesUserHaveAProperMouse = useDoesUserHaveAProperMouse();
 
 	function handleTodoInputChange(newValue: string) {
 		const trimmedValue = newValue.trim();
