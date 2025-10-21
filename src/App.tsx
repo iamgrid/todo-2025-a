@@ -101,22 +101,6 @@ function App() {
 		}
 	}, [newTodoInputFieldId]);
 
-	// const focusNewTodoInputField = useEffectEvent(() => {
-	// 	const functionSignature = "App.tsx@focusNewTodoInputField()";
-
-	// 	const newTodoInputField = document.getElementById(
-	// 		newTodoInputFieldId
-	// 	) as HTMLInputElement | null;
-	// 	if (newTodoInputField !== null) {
-	// 		newTodoInputField.focus();
-	// 	} else {
-	// 		console.error(
-	// 			functionSignature,
-	// 			"Could not find new todo input field in the DOM!"
-	// 		);
-	// 	}
-	// });
-
 	useEffect(() => {
 		const functionSignature = "App.tsx@component mounted useEffect()";
 
