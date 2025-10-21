@@ -1,7 +1,7 @@
 {
 	"name": "todo-2025-a",
 	"private": true,
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"type": "module",
 	"author": "Andy Pataki",
 	"homepage": "https://iamgrid.co.uk/todo-2025-a",
@@ -41,16 +41,16 @@
 		"@types/react": "^19.2.2",
 		"@types/react-dom": "^19.2.2",
 		"@vitejs/plugin-react": "^5.0.0",
-		"eslint": "^9.33.0",
-		"eslint-plugin-react-dom": "^1.53.1",
+		"eslint": "^9.38.0",
+		"eslint-plugin-react-dom": "^2.2.2",
 		"eslint-plugin-react-hooks": "^7.0.0",
-		"eslint-plugin-react-refresh": "^0.4.20",
-		"eslint-plugin-react-x": "^1.53.1",
+		"eslint-plugin-react-refresh": "^0.4.24",
+		"eslint-plugin-react-x": "^2.2.2",
 		"globals": "^16.3.0",
 		"jsdom": "^27.0.0",
-		"typescript": "~5.8.3",
-		"typescript-eslint": "^8.39.1",
-		"vite": "^7.1.2",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.46.2",
+		"vite": "^7.1.11",
 		"vitest": "^3.2.4"
 	}
 }

@@ -15,8 +15,7 @@ export default tseslint.config([
 		extends: [
 			js.configs.recommended,
 			tseslint.configs.recommendedTypeChecked,
-			// reactHooks.configs["recommended-latest"],
-			"plugin:react-hooks/recommended",
+			reactHooks.configs["recommended-latest"],
 			reactRefresh.configs.vite,
 			// Enable lint rules for React
 			reactX.configs["recommended-typescript"],
@@ -38,8 +37,6 @@ export default tseslint.config([
 			"@typescript-eslint/no-unsafe-call": "off",
 			"react-hooks/rules-of-hooks": "error",
 			"react-hooks/exhaustive-deps": "warn",
-			// "@typescript-eslint/no-unsafe-argument": "off",
-			// "@typescript-eslint/no-unsafe-assignment": "off",
 		},
 	},
 ]);

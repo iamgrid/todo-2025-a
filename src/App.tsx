@@ -183,9 +183,14 @@ function App() {
 				setIsSnackbarOpen(true);
 			}
 		}
+	}, []);
+
+	useEffect(() => {
+		const functionSignature = "App.tsx@keyDownHandler useEffect()";
 
 		const keyDownHandler = (event: KeyboardEvent) => {
 			const functionSignature = "App.tsx@keyDownHandler()";
+			// console.log(functionSignature, "Key down event detected");
 			if (event.key === "Enter" && event.ctrlKey) {
 				console.log(functionSignature, "Ctrl+Enter detected");
 				event.preventDefault();
@@ -193,10 +198,14 @@ function App() {
 				window.scrollTo(0, 0);
 			}
 		};
+		console.log(functionSignature, "Adding global keydown event listener");
 		window.addEventListener("keydown", keyDownHandler);
 
 		return () => {
-			// Cleanup if needed when component unmounts
+			console.log(
+				functionSignature,
+				"Removing global keydown event listener"
+			);
 			window.removeEventListener("keydown", keyDownHandler);
 		};
 	}, [focusNewTodoInputField]);
