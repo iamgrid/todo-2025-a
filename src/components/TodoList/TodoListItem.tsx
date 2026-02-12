@@ -30,7 +30,7 @@ const TodoItemTitle = styled("span")<{ isCompleted: boolean }>(
 		textDecoration: isCompleted ? "line-through" : "none",
 		fontWeight: "bold",
 		color: isCompleted ? "#c0c0c0" : "inherit",
-	})
+	}),
 );
 
 const BUTTONS_BREAKPOINT = "700px";
@@ -66,7 +66,7 @@ export interface TTodoListItemProps {
 	handleEditTodo(editedTodoId: number): void;
 	handleEditedTodoSubmissionProper(
 		editedTodoId: number,
-		newText: string
+		newText: string,
 	): void;
 	handleCancelEditing(): void;
 	triggerFriendlyDateRerender: number;
@@ -92,7 +92,7 @@ export default function TodoListItem({
 	] = useState<number>(0);
 
 	function handleEditFormSubmit(
-		event: React.FormEvent<HTMLFormElement> | null = null
+		event: React.FormEvent<HTMLFormElement> | null = null,
 	) {
 		const functionSignature = "TodoListItem.tsx@handleEditFormSubmit()";
 
@@ -102,7 +102,7 @@ export default function TodoListItem({
 			formElement = event.currentTarget;
 		} else {
 			formElement = document.getElementById(
-				editTodoInputFormId
+				editTodoInputFormId,
 			) as HTMLFormElement;
 		}
 
@@ -113,7 +113,7 @@ export default function TodoListItem({
 		if (formElement === null) {
 			console.error(
 				functionSignature,
-				"Could not find edit todo form element in the DOM!"
+				"Could not find edit todo form element in the DOM!",
 			);
 			return;
 		}
@@ -123,7 +123,7 @@ export default function TodoListItem({
 		if (!formData.has(editTodoInputFieldId)) {
 			console.error(
 				functionSignature,
-				`Form data does not have expected field ${editTodoInputFieldId}!`
+				`Form data does not have expected field ${editTodoInputFieldId}!`,
 			);
 			return;
 		}
@@ -133,7 +133,7 @@ export default function TodoListItem({
 		if (newText.length === 0) {
 			console.warn(
 				functionSignature,
-				"New todo text is empty after trimming whitespace!"
+				"New todo text is empty after trimming whitespace!",
 			);
 			return;
 		}
@@ -152,7 +152,7 @@ export default function TodoListItem({
 						input={todo.completedAt}
 						triggerRerender={triggerFriendlyDateRerender}
 					/>
-				</>
+				</>,
 			);
 		}
 
@@ -164,7 +164,7 @@ export default function TodoListItem({
 						input={todo.lastUpdatedAt}
 						triggerRerender={triggerFriendlyDateRerender}
 					/>
-				</>
+				</>,
 			);
 		}
 
@@ -175,7 +175,7 @@ export default function TodoListItem({
 					input={todo.createdAt}
 					triggerRerender={triggerFriendlyDateRerender}
 				/>
-			</>
+			</>,
 		);
 
 		return (
@@ -299,7 +299,7 @@ export default function TodoListItem({
 								setEditTodoInputIsValid(false);
 								if (val.length > MAX_TODO_TITLE_LENGTH) {
 									setEditTodoInputValueIsOverMaxLengthBy(
-										val.length - MAX_TODO_TITLE_LENGTH
+										val.length - MAX_TODO_TITLE_LENGTH,
 									);
 								} else {
 									setEditTodoInputValueIsOverMaxLengthBy(0);
@@ -316,6 +316,9 @@ export default function TodoListItem({
 							if (event.key === "Enter") {
 								event.preventDefault();
 								handleEditFormSubmit();
+							} else if (event.key === "Escape") {
+								event.preventDefault();
+								handleCancelEditing();
 							}
 						}}
 					/>
