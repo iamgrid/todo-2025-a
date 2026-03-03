@@ -3,7 +3,7 @@ import { it, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import TodoListItem from "./TodoListItem";
 
-import { type TTodo } from "../../todoStore";
+import { type TTodo } from "../../useTodoStore";
 
 const mockTodo1: TTodo = {
 	id: 1,
@@ -34,18 +34,18 @@ it("renders correctly", async () => {
 			handleEditedTodoSubmissionProper={() => {}}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	expect(screen.getByText("Test Todo")).toBeInTheDocument();
 	expect(
-		screen.getByLabelText("Todo completion checkbox")
+		screen.getByLabelText("Todo completion checkbox"),
 	).toBeInTheDocument();
 	expect(
-		screen.getByRole("button", { name: "Edit this todo" })
+		screen.getByRole("button", { name: "Edit this todo" }),
 	).toBeInTheDocument();
 	expect(
-		screen.getByRole("button", { name: "Delete this todo" })
+		screen.getByRole("button", { name: "Delete this todo" }),
 	).toBeInTheDocument();
 });
 
@@ -60,7 +60,7 @@ it("renders completed todo as completed", () => {
 			handleEditedTodoSubmissionProper={() => {}}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	expect(screen.getByText("Completed Todo")).toBeInTheDocument();
@@ -81,7 +81,7 @@ it("calls handleToggleTodoCompletion when checkbox is clicked", async () => {
 			handleEditedTodoSubmissionProper={() => {}}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	const checkbox = screen.getByLabelText("Todo completion checkbox");
@@ -103,7 +103,7 @@ it("calls handleEditTodo when edit button is clicked", async () => {
 			handleEditedTodoSubmissionProper={() => {}}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 	const editButton = screen.getByRole("button", { name: "Edit this todo" });
 	await userEvent.click(editButton);
@@ -122,15 +122,15 @@ it("shows EditTodoForm when isTodoBeingEdited is true", () => {
 			handleEditedTodoSubmissionProper={() => {}}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	expect(screen.getByRole("textbox")).toBeInTheDocument();
 	expect(
-		screen.getByRole("button", { name: "Save edited todo" })
+		screen.getByRole("button", { name: "Save edited todo" }),
 	).toBeInTheDocument();
 	expect(
-		screen.getByRole("button", { name: "Cancel editing todo" })
+		screen.getByRole("button", { name: "Cancel editing todo" }),
 	).toBeInTheDocument();
 });
 
@@ -149,7 +149,7 @@ it("calls handleEditedTodoSubmissionProper with new text when edit form is submi
 			}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	const input = screen.getByRole("textbox");
@@ -161,7 +161,7 @@ it("calls handleEditedTodoSubmissionProper with new text when edit form is submi
 	expect(handleEditedTodoSubmissionProperMock).toHaveBeenCalledTimes(1);
 	expect(handleEditedTodoSubmissionProperMock).toHaveBeenCalledWith(
 		1,
-		"Updated Todo Text"
+		"Updated Todo Text",
 	);
 });
 
@@ -180,7 +180,7 @@ it("disables the save button when edit input is empty", async () => {
 			}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	const input = screen.getByRole("textbox");
@@ -202,7 +202,7 @@ it("calls handleCancelEditing when cancel button is clicked in edit form", async
 			handleEditedTodoSubmissionProper={() => {}}
 			handleCancelEditing={handleCancelEditingMock}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	const cancelButton = screen.getByRole("button", {
@@ -225,7 +225,7 @@ it("calls handleDeleteTodoProper when delete button is clicked", async () => {
 			handleEditedTodoSubmissionProper={() => {}}
 			handleCancelEditing={() => {}}
 			triggerFriendlyDateRerender={0}
-		/>
+		/>,
 	);
 
 	const deleteButton = screen.getByRole("button", {

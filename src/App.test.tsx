@@ -22,8 +22,9 @@ it("renders correctly", () => {
 	render(<App />);
 
 	expect(
-		screen.getByRole("textbox", { name: /Add new todo/i })
+		screen.getByRole("textbox", { name: /Add new todo/i }),
 	).toBeInTheDocument();
 	expect(screen.getByRole("button", { name: /Add/i })).toBeInTheDocument();
-	expect(screen.getByText(/You have no todos yet/i)).toBeInTheDocument();
+	expect(screen.getByText(/do 50 push-ups/i)).toBeInTheDocument();
+	expect(screen.getByText(/buy avocado/i)).toBeInTheDocument();
 });

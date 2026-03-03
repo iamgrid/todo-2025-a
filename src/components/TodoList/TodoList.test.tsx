@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 
 import TodoList from "./TodoList";
 
-import { type TTodo } from "../../todoStore";
+import { type TTodo } from "../../useTodoStore";
 
 const mockTodos: TTodo[] = [
 	{
@@ -35,7 +35,7 @@ it("renders correctly", async () => {
 			handleToggleTodoCompletion={() => {}}
 			handleDeleteTodo={() => {}}
 			handleEditedTodoSubmission={() => {}}
-		/>
+		/>,
 	);
 
 	expect(screen.getByText("B Test Todo 1")).toBeInTheDocument();
@@ -56,7 +56,7 @@ it("renders only incomplete todos when filter is set to incomplete", async () =>
 			handleToggleTodoCompletion={() => {}}
 			handleDeleteTodo={() => {}}
 			handleEditedTodoSubmission={() => {}}
-		/>
+		/>,
 	);
 
 	await userEvent.click(screen.getByLabelText("Incomplete (1)"));
@@ -75,7 +75,7 @@ it("renders only completed todos when filter is set to completed", async () => {
 			handleToggleTodoCompletion={() => {}}
 			handleDeleteTodo={() => {}}
 			handleEditedTodoSubmission={() => {}}
-		/>
+		/>,
 	);
 
 	await userEvent.click(screen.getByLabelText("Completed (1)"));
@@ -94,7 +94,7 @@ it("sorts todos by newest first when sort option is set", async () => {
 			handleToggleTodoCompletion={() => {}}
 			handleDeleteTodo={() => {}}
 			handleEditedTodoSubmission={() => {}}
-		/>
+		/>,
 	);
 
 	await userEvent.click(screen.getByLabelText("Newest First"));
@@ -115,7 +115,7 @@ it("sorts todos by oldest first when sort option is set", async () => {
 			handleToggleTodoCompletion={() => {}}
 			handleDeleteTodo={() => {}}
 			handleEditedTodoSubmission={() => {}}
-		/>
+		/>,
 	);
 
 	await userEvent.click(screen.getByLabelText("Oldest First"));
@@ -136,7 +136,7 @@ it("sorts todos by title A-Z when sort option is set", async () => {
 			handleToggleTodoCompletion={() => {}}
 			handleDeleteTodo={() => {}}
 			handleEditedTodoSubmission={() => {}}
-		/>
+		/>,
 	);
 
 	await userEvent.click(screen.getByLabelText("Title (A-Z)"));
@@ -157,7 +157,7 @@ it("shows dialog when delete button is clicked", async () => {
 			handleToggleTodoCompletion={() => {}}
 			handleDeleteTodo={() => {}}
 			handleEditedTodoSubmission={() => {}}
-		/>
+		/>,
 	);
 
 	const deleteButtons = screen.getAllByRole("button", {
@@ -168,6 +168,6 @@ it("shows dialog when delete button is clicked", async () => {
 
 	expect(screen.getByRole("dialog")).toBeInTheDocument();
 	expect(
-		screen.getByText(/You are about to delete the following todo:/)
+		screen.getByText(/You are about to delete the following todo:/),
 	).toBeInTheDocument();
 });

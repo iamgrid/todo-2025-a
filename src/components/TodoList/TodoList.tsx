@@ -4,7 +4,7 @@ import List from "@mui/material/List";
 
 import styled from "@emotion/styled";
 
-import type { TTodo } from "../../todoStore";
+import type { TTodo } from "../../useTodoStore";
 
 import TodoListItem from "../TodoList/TodoListItem.tsx";
 import AlertDialog from "../shared/AlertDialog.tsx";
@@ -135,7 +135,7 @@ export default function TodoList({
 
 	function handleEditedTodoSubmissionProper(
 		editedTodoId: number,
-		newText: string
+		newText: string,
 	): void {
 		handleEditedTodoSubmission(editedTodoId, newText);
 		setEditingTodoId(null);
@@ -193,9 +193,9 @@ export default function TodoList({
 							{shortenPhrase(
 								todoIdToDelete !== null &&
 									todos.find(
-										(todo) => todo.id === todoIdToDelete
+										(todo) => todo.id === todoIdToDelete,
 									)?.text,
-								100
+								100,
 							)}
 						</span>
 					</>
@@ -211,7 +211,7 @@ export default function TodoList({
 					} else {
 						console.error(
 							functionSignature,
-							"todoIdToDelete is null"
+							"todoIdToDelete is null",
 						);
 					}
 

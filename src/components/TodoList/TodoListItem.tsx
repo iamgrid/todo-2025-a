@@ -1,5 +1,5 @@
 import { useState, useId } from "react";
-import type { TTodo } from "../../todoStore";
+import type { TTodo } from "../../useTodoStore";
 
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";

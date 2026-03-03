@@ -33,10 +33,11 @@ test.describe("Todo App", () => {
 	test("renders correctly", async ({ page }) => {
 		await expect(page).toHaveTitle(/.*todo 2025 a/i);
 		await expect(
-			page.getByRole("textbox", { name: /add new todo/i })
+			page.getByRole("textbox", { name: /add new todo/i }),
 		).toBeVisible();
 		await expect(page.getByRole("button", { name: /add/i })).toBeVisible();
-		await expect(page.getByText(/you have no todos .*/i)).toBeVisible();
+		await expect(page.getByText(/do 50 push-ups/i)).toBeVisible();
+		await expect(page.getByText(/buy avocado/i)).toBeVisible();
 	});
 
 	test("can add new todos", async ({ page }) => {
@@ -56,21 +57,17 @@ test.describe("Todo App", () => {
 		await expect(page.getByText(todoText4)).toBeVisible();
 
 		const allTodos = page.getByRole("listitem");
-		await expect(allTodos).toHaveCount(4);
+		await expect(allTodos).toHaveCount(6);
 	});
 
 	test("can complete a todo", async ({ page }) => {
 		const allTodos = page.getByRole("listitem");
 
-		await expect(allTodos).toHaveCount(0);
-
-		await _addTodos(page);
-
-		await expect(allTodos).toHaveCount(4);
+		await expect(allTodos).toHaveCount(2);
 
 		await page.getByRole("button", { name: /oldest first/i }).click();
 
-		await expect(allTodos.nth(0)).toHaveText(/first todo.*/i);
+		await expect(allTodos.nth(0)).toHaveText(/buy avocado/i);
 
 		const firstTodoCheckbox = allTodos.nth(0).getByRole("checkbox");
 		await expect(firstTodoCheckbox).not.toBeChecked();
@@ -81,51 +78,43 @@ test.describe("Todo App", () => {
 	test("can edit a todo", async ({ page }) => {
 		const allTodos = page.getByRole("listitem");
 
-		await expect(allTodos).toHaveCount(0);
-
-		await _addTodos(page);
-
-		await expect(allTodos).toHaveCount(4);
+		await expect(allTodos).toHaveCount(2);
 
 		await page.getByRole("button", { name: /oldest first/i }).click();
 
-		await expect(allTodos.nth(1)).toHaveText(/second todo.*/i);
+		await expect(allTodos.nth(1)).toHaveText(/do 50 push-ups/i);
 
 		const secondTodo = allTodos.nth(1);
 		await secondTodo.getByRole("button", { name: /edit/i }).click();
 
 		const editInput = secondTodo.getByRole("textbox");
-		await expect(editInput).toHaveValue(/second todo/i);
+		await expect(editInput).toHaveValue(/do 50 push-ups/i);
 
-		await editInput.fill("Updated second todo");
+		await editInput.fill("do 50 push-ups (updated)");
 		await page.keyboard.press("Enter");
 
-		await expect(secondTodo).toHaveText(/updated second todo.*/i);
+		await expect(secondTodo).toHaveText(/do 50 push-ups \(updated\)/i);
 	});
 
 	test("can delete a todo", async ({ page }) => {
 		const allTodos = page.getByRole("listitem");
 
-		await expect(allTodos).toHaveCount(0);
-
-		await _addTodos(page);
-
-		await expect(allTodos).toHaveCount(4);
+		await expect(allTodos).toHaveCount(2);
 
 		await page.getByRole("button", { name: /oldest first/i }).click();
 
-		await expect(allTodos.nth(2)).toHaveText(/third todo.*/i);
+		await expect(allTodos.nth(1)).toHaveText(/do 50 push-ups/i);
 
-		const thirdTodo = allTodos.nth(2);
-		await thirdTodo.getByRole("button", { name: /delete/i }).click();
+		const secondTodo = allTodos.nth(1);
+		await secondTodo.getByRole("button", { name: /delete/i }).click();
 
 		await expect(
-			page.getByText(/you are about to delete the following.*/i)
+			page.getByText(/you are about to delete the following.*/i),
 		).toBeVisible();
 		await page.getByRole("button", { name: /^delete todo$/i }).click();
 
-		await expect(allTodos).toHaveCount(3);
-		await expect(allTodos.nth(2)).not.toHaveText(/third todo.*/i);
+		await expect(allTodos).toHaveCount(1);
+		await expect(allTodos.nth(0)).not.toHaveText(/do 50 push-ups/i);
 	});
 
 	test("can clear completed todos using the appropriate button", async ({
@@ -133,11 +122,11 @@ test.describe("Todo App", () => {
 	}) => {
 		const allTodos = page.getByRole("listitem");
 
-		await expect(allTodos).toHaveCount(0);
+		await expect(allTodos).toHaveCount(2);
 
 		await _addTodos(page);
 
-		await expect(allTodos).toHaveCount(4);
+		await expect(allTodos).toHaveCount(6);
 
 		await page.getByRole("button", { name: /oldest first/i }).click();
 
@@ -154,14 +143,14 @@ test.describe("Todo App", () => {
 
 		await expect(
 			page.getByText(
-				/you are about to permanently delete 2 completed todos.*/i
-			)
+				/you are about to permanently delete 2 completed todos.*/i,
+			),
 		).toBeVisible();
 		await page.getByRole("button", { name: /^clear completed$/i }).click();
 
-		await expect(allTodos).toHaveCount(2);
-		await expect(allTodos.nth(0)).toHaveText(/third todo.*/i);
-		await expect(allTodos.nth(1)).toHaveText(/fourth todo.*/i);
+		await expect(allTodos).toHaveCount(4);
+		await expect(allTodos.nth(0)).toHaveText(/first todo.*/i);
+		await expect(allTodos.nth(1)).toHaveText(/second todo.*/i);
 	});
 
 	test("can complete all todos using the appropriate button", async ({
@@ -169,24 +158,18 @@ test.describe("Todo App", () => {
 	}) => {
 		const allTodos = page.getByRole("listitem");
 
-		await expect(allTodos).toHaveCount(0);
-
-		await _addTodos(page);
-
-		await expect(allTodos).toHaveCount(4);
+		await expect(allTodos).toHaveCount(2);
 
 		await page.getByRole("button", { name: /complete all/i }).click();
 
 		await expect(
 			page.getByText(
-				/you are about to mark 4 incomplete todos as completed.*/i
-			)
+				/you are about to mark 2 incomplete todos as completed.*/i,
+			),
 		).toBeVisible();
 		await page.getByRole("button", { name: /^complete all$/i }).click();
 
 		await expect(allTodos.nth(0).getByRole("checkbox")).toBeChecked();
 		await expect(allTodos.nth(1).getByRole("checkbox")).toBeChecked();
-		await expect(allTodos.nth(2).getByRole("checkbox")).toBeChecked();
-		await expect(allTodos.nth(3).getByRole("checkbox")).toBeChecked();
 	});
 });
