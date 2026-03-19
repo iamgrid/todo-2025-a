@@ -128,3 +128,191 @@ footer {
 		transition: color 0.2s ease-in-out 0.5s;
 	}
 }
+
+.atp {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	margin: 5px 0 0 3px;
+	/* border: 1px solid #00000000; */
+	--atp-cog-inactive: #ffffff60;
+	--atp-cog-active: #ffffffff;
+	--atp-text: #ffffff;
+	--atp-bg: #000000;
+	--atp-border: #ffffff80;
+	--atp-shadow: #00000080;
+	font-weight: 300;
+	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+	letter-spacing: 0.8px;
+}
+
+@media (width >= 48rem) {
+	.atp {
+		margin: 14px 0 0 14px;
+	}
+}
+
+.atp a {
+	text-decoration: underline;
+}
+
+.atp__cog {
+	width: 56px;
+	height: 56px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.atp__cog svg {
+	transform: scale(1.1);
+	display: block;
+	padding-bottom: 0;
+}
+
+.atp__cog .svg-cog {
+	transform-origin: center;
+	animation-duration: 1.5s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	animation-name: spinAnimation;
+	animation-play-state: paused;
+	transition: fill 0.25s ease-in-out;
+}
+
+.atp__cog .svg-cog, .atp__cog .svg-qm {
+	fill: var(--atp-cog-inactive);
+}
+
+@keyframes spinAnimation { 
+	from {
+		transform: rotate(0);
+	}	
+	to { 
+		transform: rotate(360deg);
+	} 
+}
+
+.atp--active .svg-cog {
+	animation-play-state: running;
+	fill: var(--atp-cog-active);
+}
+
+.atp--active .svg-qm {
+	fill: var(--atp-cog-active);
+}
+
+.atp__header {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	width: 58px;
+	background: unset;
+	position: absolute;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	align-items: center;
+	gap: 5px;
+	z-index: 1002;
+	cursor: pointer;
+}
+
+.atp__title {
+	display: none;
+	color: var(--atp-text);
+	text-align: left;
+	text-transform: uppercase;
+	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+	font-weight: 300;
+	font-size: 11px;
+	letter-spacing: 4px;
+	opacity: 0;
+	transition: opacity 0.25s ease-in-out;
+}
+
+.atp--active .atp__title {
+	display: block;
+	opacity: 1;
+}
+
+.atp--active .atp__header {
+	width: 262px;
+}
+
+@media all and (min-width: 500px) {
+	.atp__header {
+		width: 262px;
+	}
+
+	.atp__title {
+		display: block;
+	}
+}
+
+@media (pointer: fine) {
+	.atp__header:hover .svg-cog {
+		animation-play-state: running;
+		fill: var(--atp-cog-active);
+	}
+
+	.atp__header:hover .svg-qm {
+		fill: var(--atp-cog-active);
+	}
+
+	.atp__header:hover .atp__title {
+		opacity: 1;
+	}
+}
+
+.atp main {
+	display: none;
+	z-index: 1001;
+	transition: opacity 0.25s ease-in-out;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-radius: 25px 0 0 0;
+	background-color: var(--atp-bg);
+	color: var(--atp-text);
+	text-align: left;
+	font-size: 11px;
+	border: 1px solid var(--atp-border);
+	box-shadow: 0 0 5px var(--atp-shadow);
+	padding: 55px 15px 4px;
+}
+
+.atp--active main {
+	display: block;
+	width: 300px;
+}
+
+.atp main p {
+	line-height: 16px;
+	text-align: justify;
+	margin: 12px 0;
+}
+
+.atp main p:first-child {
+	margin-top: 0;
+}
+
+.atp main a {
+	font-weight: bold;
+	color: var(--atp-text);
+}
+
+.atp main a:hover {
+	opacity: 0.8;
+}
+
+.atp main h1 {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.atp main span {
+	opacity: 0.65;
+}

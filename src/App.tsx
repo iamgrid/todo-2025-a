@@ -16,6 +16,7 @@ import customTheme from "./customTheme.ts";
 import TodoList from "./components/TodoList/TodoList.tsx";
 import AlertDialog from "./components/shared/AlertDialog.tsx";
 import AddTodoForm from "./components/AddTodoForm/AddTodoForm.tsx";
+import AboutThisProject from "./components/AboutThisProject/AboutThisProject.tsx";
 
 import appLogo from "./assets/todo-2025-a-logo.svg";
 
@@ -190,6 +191,7 @@ function App() {
 
 	return (
 		<ThemeProvider theme={customTheme}>
+			<AboutThisProject />
 			<Container maxWidth="md">
 				<Box sx={{ mt: 1, mb: 3, textAlign: "center" }}>
 					<img
