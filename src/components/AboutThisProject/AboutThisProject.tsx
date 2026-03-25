@@ -1,14 +1,22 @@
-import { useState, useRef } from "react";
-import { friendlyDate } from "../../helpers";
+import { useState, useRef, useEffect } from "react";
+import { friendlyDate, ATP_RERENDER_INTERVAL_MS } from "../../helpers";
 
-interface TAboutThisProjectProps {
-	triggerRerender: number;
-}
-
-function AboutThisProject({ triggerRerender }: TAboutThisProjectProps) {
+function AboutThisProject() {
 	const [isATPActive, setIsATPActive] = useState<boolean>(false);
 	const [isATPTransitioning, setIsATPTansitioning] = useState<boolean>(false);
+	// @ts-expect-error - triggerRerender is not used in the component, but it's included as a prop to trigger re-renders at a set interval
+	const [triggerRerender, setTriggerRerender] = useState<number>(0);
 	const mainRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		const functionSignature =
+			"AboutThisProject.tsx@rerender component useEffect()";
+		const interval = setInterval(() => {
+			setTriggerRerender((prev) => prev + 1);
+			console.log(functionSignature, "triggered");
+		}, ATP_RERENDER_INTERVAL_MS);
+		return () => clearInterval(interval);
+	}, []);
 
 	const anHourAgoDateObj = new Date();
 	anHourAgoDateObj.setHours(anHourAgoDateObj.getHours() - 1);
