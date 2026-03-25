@@ -22,6 +22,7 @@ import appLogo from "./assets/todo-2025-a-logo.svg";
 
 import "./overrides.css";
 import Footer from "./components/Footer/Footer.tsx";
+import { ATP_RERENDER_INTERVAL_MS } from "./helpers.tsx";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
@@ -43,6 +44,7 @@ function App() {
 		// isLocalStorageWorking,
 	} = useTodoStore();
 
+	const [triggerATPRerender, setTriggerATPRerender] = useState<number>(0);
 	const [isCompleteAllAlertDialogOpen, setIsCompleteAllAlertDialogOpen] =
 		useState<boolean>(false);
 	const [
@@ -120,6 +122,15 @@ function App() {
 		};
 	}, [focusNewTodoInputField]);
 
+	useEffect(() => {
+		const functionSignature = "App.tsx@rerender ATP useEffect()";
+		const interval = setInterval(() => {
+			setTriggerATPRerender((prev) => prev + 1);
+			console.log(functionSignature, "triggered");
+		}, ATP_RERENDER_INTERVAL_MS);
+		return () => clearInterval(interval);
+	}, []);
+
 	function handleAddTodo(newTodoText: string) {
 		addTodo(newTodoText);
 	}
@@ -191,7 +202,7 @@ function App() {
 
 	return (
 		<ThemeProvider theme={customTheme}>
-			<AboutThisProject />
+			<AboutThisProject triggerRerender={triggerATPRerender} />
 			<Container maxWidth="md">
 				<Box sx={{ mt: 1, mb: 3, textAlign: "center" }}>
 					<img

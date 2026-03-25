@@ -40,7 +40,7 @@ export default function useTodoStore() {
 		defaultServerValue: "initializing",
 	});
 
-	console.log("isPersistent in useTodoStore:", isPersistent);
+	// console.log("isPersistent in useTodoStore:", isPersistent);
 
 	const isLocalStorageWorking = isPersistent;
 

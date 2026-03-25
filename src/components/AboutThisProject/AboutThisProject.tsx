@@ -1,32 +1,31 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
+import { friendlyDate } from "../../helpers";
 
-function AboutThisProject() {
+interface TAboutThisProjectProps {
+	triggerRerender: number;
+}
+
+function AboutThisProject({ triggerRerender }: TAboutThisProjectProps) {
 	const [isATPActive, setIsATPActive] = useState<boolean>(false);
 	const [isATPTransitioning, setIsATPTansitioning] = useState<boolean>(false);
 	const mainRef = useRef<HTMLElement>(null);
 
-	const { yesterdayDateStr, anHourAgoStr } = useMemo(() => {
-		const yesterdayDateObj = new Date();
-		yesterdayDateObj.setDate(yesterdayDateObj.getDate() - 1);
-		// const yesterdayDateStr = yesterdayDateObj.toISOString().split("T")[0];
-		const yesterdayDateStr = yesterdayDateObj.toLocaleString("en-US", {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-			// hour: "2-digit",
-			// minute: "2-digit",
-		});
-		const anHourAgoDateObj = new Date();
-		anHourAgoDateObj.setHours(anHourAgoDateObj.getHours() - 1);
-		const anHourAgoStr = anHourAgoDateObj.toLocaleString("en-US", {
-			// year: "numeric",
-			// month: "long",
-			// day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-		return { yesterdayDateStr, anHourAgoStr };
-	}, []);
+	const anHourAgoDateObj = new Date();
+	anHourAgoDateObj.setHours(anHourAgoDateObj.getHours() - 1);
+	const anHourAgoStr = anHourAgoDateObj.toLocaleString("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+	const nineDaysAgoObj = new Date();
+	nineDaysAgoObj.setDate(nineDaysAgoObj.getDate() - 9);
+	const nineDaysAgoStr = nineDaysAgoObj.toLocaleString("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	});
 
 	function handleHeaderClick() {
 		if (isATPTransitioning) {
@@ -129,17 +128,20 @@ function AboutThisProject() {
 					>
 						helpers.tsx@friendlyDate()
 					</a>
-					<span> - </span> Let me ask you, when was {yesterdayDateStr}{" "}
-					in relative/human terms? Yesterday, but I should have just
-					said that, right? What about {anHourAgoStr}? An hour ago,
-					but again, I should have just said that.
+					<span> - </span> Let me ask you, when was "{anHourAgoStr}"
+					in relative/human terms? An hour ago, but I should have just
+					said that, right? What about "{nineDaysAgoStr}"? Nine days
+					ago, which I think is easier to grok than the actual
+					date—but there will be instances where the latter is also
+					useful, so the friendlyDate() function shows both like this:{" "}
+					"{friendlyDate(nineDaysAgoStr)}".
 				</p>
 				<p>
-					I wrote the friendlyDate() function over ten years ago, and
-					it was included in every project I worked on since. The
-					reason I'm going into this much detail about it here is that
-					it's a good demonstration of how I think, but also how I
-					find meaning in my work.
+					I wrote friendlyDate() over ten years ago, and it was
+					included in every project I worked on since. The reason I'm
+					going into this much detail about it here is that it's a
+					good demonstration of how I think about software differently
+					from many others.
 				</p>
 				<p>
 					As a developer, you have to make a conscious choice about
@@ -155,12 +157,13 @@ function AboutThisProject() {
 					button labels that are as obvious as humanly possible, and
 					forms that a user can navigate with just their keyboard,
 					down to small-time stuff, like how dates and times are
-					displayed, isn't just "good UX". Having all these things{" "}
+					displayed isn't just good UX. Having all these things{" "}
 					<span style={{ fontStyle: "italic", fontWeight: "bold" }}>
 						just right
 					</span>{" "}
-					makes people's day a tiny bit better, and that's what I want
-					to do with my time on this earth.
+					makes people's day a tiny bit better. And striving to make
+					people's day better is a deeply meaningful and worthy way to
+					spend one's work life.
 				</p>
 			</main>
 		</div>
