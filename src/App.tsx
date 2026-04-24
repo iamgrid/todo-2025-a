@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useId, useCallback } from "react";
+import { useState, useEffect, useMemo, useId } from "react";
 
 import useTodoStore from "./useTodoStore.tsx";
 
@@ -22,6 +22,7 @@ import appLogo from "./assets/todo-2025-a-logo.svg";
 
 import "./overrides.css";
 import Footer from "./components/Footer/Footer.tsx";
+import { focusDOMElementById } from "./helpers.tsx";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
@@ -79,22 +80,6 @@ function App() {
 		return { noOfTodos, noOfIncompleteTodos, noOfCompletedTodos };
 	}, [todoStoreTodos]);
 
-	const focusNewTodoInputField = useCallback(() => {
-		const functionSignature = "App.tsx@focusNewTodoInputField()";
-
-		const newTodoInputField = document.getElementById(
-			newTodoInputFieldId,
-		) as HTMLInputElement | null;
-		if (newTodoInputField !== null) {
-			newTodoInputField.focus();
-		} else {
-			console.error(
-				functionSignature,
-				"Could not find new todo input field in the DOM!",
-			);
-		}
-	}, [newTodoInputFieldId]);
-
 	useEffect(() => {
 		const functionSignature = "App.tsx@keyDownHandler useEffect()";
 
@@ -104,7 +89,7 @@ function App() {
 			if (event.key === "Enter" && event.ctrlKey) {
 				console.log(functionSignature, "Ctrl+Enter detected");
 				event.preventDefault();
-				focusNewTodoInputField();
+				focusDOMElementById(newTodoInputFieldId);
 				window.scrollTo(0, 0);
 			}
 		};
@@ -118,7 +103,7 @@ function App() {
 			);
 			window.removeEventListener("keydown", keyDownHandler);
 		};
-	}, [focusNewTodoInputField]);
+	}, [newTodoInputFieldId]);
 
 	function handleAddTodo(newTodoText: string) {
 		addTodo(newTodoText);
@@ -203,7 +188,6 @@ function App() {
 				<AddTodoForm
 					handleAddTodo={handleAddTodo}
 					newTodoInputFieldId={newTodoInputFieldId}
-					focusNewTodoInputField={focusNewTodoInputField}
 				/>
 				<MainWrapper>{renderTodoList()}</MainWrapper>
 				<AlertDialog

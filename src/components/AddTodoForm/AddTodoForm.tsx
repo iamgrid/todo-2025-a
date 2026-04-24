@@ -7,6 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import styled from "@emotion/styled";
 
 import {
+	focusDOMElementById,
 	MAX_TODO_TITLE_LENGTH,
 	TODO_TITLE_LENGTH_ERROR_MESSAGE,
 } from "./../../helpers.tsx";
@@ -15,7 +16,6 @@ import { useDoesUserHaveAProperMouse } from "../shared/useDoesUserHaveAProperMou
 interface TAddTodoFormProps {
 	handleAddTodo(newTodoText: string): void;
 	newTodoInputFieldId: string;
-	focusNewTodoInputField(): void;
 }
 
 const CustomForm = styled("form")({
@@ -31,7 +31,6 @@ const CustomForm = styled("form")({
 export default function AddTodoForm({
 	handleAddTodo,
 	newTodoInputFieldId,
-	focusNewTodoInputField,
 }: TAddTodoFormProps) {
 	const formId = useId();
 	const [todoInputIsValid, setTodoInputIsValid] = useState<boolean>(true);
@@ -114,7 +113,7 @@ export default function AddTodoForm({
 				functionSignature,
 				"New todo text is empty, returning early...",
 			);
-			focusNewTodoInputField();
+			focusDOMElementById(newTodoInputFieldId);
 			return;
 		}
 
@@ -125,7 +124,7 @@ export default function AddTodoForm({
 		setTodoInputIsValid(true);
 		setTodoInputValueIsOverMaxLengthBy(0);
 
-		focusNewTodoInputField();
+		focusDOMElementById(newTodoInputFieldId);
 	}
 
 	return (
@@ -193,7 +192,7 @@ export default function AddTodoForm({
 							newTodoInputField.value = "";
 							setTodoInputIsValid(true);
 							setTodoInputValueIsOverMaxLengthBy(0);
-							focusNewTodoInputField();
+							focusDOMElementById(newTodoInputFieldId);
 						}
 					}
 				}}
