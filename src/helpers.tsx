@@ -156,10 +156,10 @@ export function shortenPhrase(
 
 export function focusDOMElementById(elementId: string): void {
 	const functionSignature = "helpers.tsx@focusDOMElementById()";
-	console.log(
-		functionSignature,
-		`Attempting to focus field with id "${elementId}"...`,
-	);
+	// console.log(
+	// 	functionSignature,
+	// 	`Attempting to focus field with id "${elementId}"...`,
+	// );
 	const fieldEl = document.getElementById(
 		elementId,
 	) as HTMLInputElement | null;
