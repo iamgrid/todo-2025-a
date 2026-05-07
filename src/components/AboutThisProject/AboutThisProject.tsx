@@ -157,8 +157,8 @@ function AboutThisProject() {
 					<span style={{ fontStyle: "italic", fontWeight: "bold" }}>
 						I
 					</span>{" "}
-					sweat the most are the ones that affect the user experience
-					in a direct way.
+					sweat the most are the ones that affect the end user's
+					experience in a direct way.
 				</p>
 				<p>
 					Having a UI that is clearly laid out and intuitive, with
@@ -169,9 +169,11 @@ function AboutThisProject() {
 					<span style={{ fontStyle: "italic", fontWeight: "bold" }}>
 						just right
 					</span>{" "}
-					makes people's day a tiny bit better. And striving to make
-					people's day better is a deeply meaningful and worthy way to
-					spend one's work life.
+					(by holding the end user's hand when needed while
+					simultaneously getting out of their way) makes people's day
+					a tiny bit better. And striving to make people's day better
+					is a deeply meaningful and worthy way to spend one's work
+					life.
 				</p>
 			</main>
 		</div>
