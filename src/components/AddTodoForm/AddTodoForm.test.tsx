@@ -22,13 +22,13 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-const newTodoInputFieldId = "test-new-todo-input-field-id";
+const newTodoInputFieldRef = { current: null };
 
 it("renders correctly", async () => {
 	render(
 		<AddTodoForm
 			handleAddTodo={() => {}}
-			newTodoInputFieldId={newTodoInputFieldId}
+			newTodoInputFieldRef={newTodoInputFieldRef}
 		/>,
 	);
 
@@ -43,7 +43,7 @@ it("shows validation message for input over max length, does not call handleAddT
 	render(
 		<AddTodoForm
 			handleAddTodo={handleAddTodoMock}
-			newTodoInputFieldId={newTodoInputFieldId}
+			newTodoInputFieldRef={newTodoInputFieldRef}
 		/>,
 	);
 
@@ -67,7 +67,7 @@ it("does not call handleAddTodo with empty input", async () => {
 	render(
 		<AddTodoForm
 			handleAddTodo={handleAddTodoMock}
-			newTodoInputFieldId={newTodoInputFieldId}
+			newTodoInputFieldRef={newTodoInputFieldRef}
 		/>,
 	);
 
@@ -85,7 +85,7 @@ it("calls handleAddTodo with valid input and resets form", async () => {
 	render(
 		<AddTodoForm
 			handleAddTodo={handleAddTodoMock}
-			newTodoInputFieldId={newTodoInputFieldId}
+			newTodoInputFieldRef={newTodoInputFieldRef}
 		/>,
 	);
 
@@ -98,5 +98,6 @@ it("calls handleAddTodo with valid input and resets form", async () => {
 
 	expect(handleAddTodoMock).toHaveBeenCalledWith("New Todo Item");
 	expect((input[0] as HTMLInputElement).value).toBe("");
+
 	expect(screen.getByPlaceholderText("What needs to be done?")).toHaveFocus();
 });

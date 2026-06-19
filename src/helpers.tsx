@@ -172,3 +172,19 @@ export function focusDOMElementById(elementId: string): void {
 		);
 	}
 }
+
+export function focusDOMElementByRef(
+	elementRef: React.RefObject<HTMLElement | null>,
+): void {
+	const functionSignature = "helpers.tsx@focusDOMElementByRef()";
+	console.log(
+		functionSignature,
+		`Attempting to focus field with ref...`,
+		elementRef,
+	);
+	if (elementRef.current !== null) {
+		elementRef.current.focus();
+	} else {
+		console.warn(functionSignature, `DOM element ref.current is null.`);
+	}
+}

@@ -1,4 +1,4 @@
-import { useState, useId } from "react";
+import { useState, useId, useRef } from "react";
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -7,7 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import styled from "@emotion/styled";
 
 import {
-	focusDOMElementById,
+	focusDOMElementByRef,
 	MAX_TODO_TITLE_LENGTH,
 	TODO_TITLE_LENGTH_ERROR_MESSAGE,
 } from "./../../helpers.tsx";
@@ -15,7 +15,7 @@ import { useDoesUserHaveAProperMouse } from "../shared/useDoesUserHaveAProperMou
 
 interface TAddTodoFormProps {
 	handleAddTodo(newTodoText: string): void;
-	newTodoInputFieldId: string;
+	newTodoInputFieldRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const CustomForm = styled("form")({
@@ -30,9 +30,10 @@ const CustomForm = styled("form")({
 
 export default function AddTodoForm({
 	handleAddTodo,
-	newTodoInputFieldId,
+	newTodoInputFieldRef,
 }: TAddTodoFormProps) {
-	const formId = useId();
+	const formRef = useRef<HTMLFormElement | null>(null);
+	const newTodoInputFieldId = useId();
 	const [todoInputIsValid, setTodoInputIsValid] = useState<boolean>(true);
 	const [
 		todoInputValueIsOverMaxLengthBy,
@@ -69,9 +70,7 @@ export default function AddTodoForm({
 			event.preventDefault();
 			formElement = event.currentTarget;
 		} else {
-			formElement = document.getElementById(
-				formId,
-			) as HTMLFormElement | null;
+			formElement = formRef.current;
 		}
 
 		if (!todoInputIsValid) {
@@ -88,24 +87,28 @@ export default function AddTodoForm({
 
 		const formData = new FormData(formElement);
 
-		// for (const [key, value] of formData.entries()) {
-		// 	console.log(
-		// 		functionSignature,
-		// 		`Form data entry: ${key} = ${value}`
-		// 	);
-		// }
+		const newTodoInputFieldKey = formData.keys().next().value;
 
-		if (!formData.has(newTodoInputFieldId)) {
+		if (typeof newTodoInputFieldKey !== "string") {
 			console.error(
 				functionSignature,
-				`Form data does not have expected field with ID '${newTodoInputFieldId}'!`,
+				"Could not get key for new todo input field from form data. newTodoInputFieldKey is not a string.",
+				formData.entries(),
+			);
+			return;
+		}
+
+		if (!formData.has(newTodoInputFieldKey)) {
+			console.error(
+				functionSignature,
+				`Form data does not have expected field with key '${newTodoInputFieldKey}'!`,
 				formData.entries(),
 			);
 			return;
 		}
 
 		const newTodoText = (
-			formData.get(newTodoInputFieldId) as string
+			formData.get(newTodoInputFieldKey) as string
 		).trim();
 
 		if (newTodoText.length === 0) {
@@ -113,7 +116,7 @@ export default function AddTodoForm({
 				functionSignature,
 				"New todo text is empty, returning early...",
 			);
-			focusDOMElementById(newTodoInputFieldId);
+			focusDOMElementByRef(newTodoInputFieldRef);
 			return;
 		}
 
@@ -124,7 +127,7 @@ export default function AddTodoForm({
 		setTodoInputIsValid(true);
 		setTodoInputValueIsOverMaxLengthBy(0);
 
-		focusDOMElementById(newTodoInputFieldId);
+		focusDOMElementByRef(newTodoInputFieldRef);
 	}
 
 	return (
@@ -136,11 +139,12 @@ export default function AddTodoForm({
 				handleNewTodoFormSubmission(event);
 			}}
 			data-joy-color-scheme="dark"
-			id={formId}
+			ref={formRef}
 		>
 			<TextField
 				id={newTodoInputFieldId}
 				name={newTodoInputFieldId}
+				inputRef={newTodoInputFieldRef}
 				label="Add New Todo"
 				variant="outlined"
 				fullWidth
@@ -185,14 +189,12 @@ export default function AddTodoForm({
 						handleNewTodoFormSubmission();
 					} else if (event.key === "Escape") {
 						event.preventDefault();
-						const newTodoInputField = document.getElementById(
-							newTodoInputFieldId,
-						) as HTMLInputElement | null;
+						const newTodoInputField = newTodoInputFieldRef.current;
 						if (newTodoInputField !== null) {
 							newTodoInputField.value = "";
 							setTodoInputIsValid(true);
 							setTodoInputValueIsOverMaxLengthBy(0);
-							focusDOMElementById(newTodoInputFieldId);
+							focusDOMElementByRef(newTodoInputFieldRef);
 						}
 					}
 				}}
@@ -200,12 +202,26 @@ export default function AddTodoForm({
 					const newTodoInputField = document.getElementById(
 						newTodoInputFieldId,
 					) as HTMLInputElement | null;
-					if (newTodoInputField !== null) {
-						if (newTodoInputField.value.trim().length === 0) {
-							newTodoInputField.value = "";
-							setTodoInputIsValid(true);
-							setTodoInputValueIsOverMaxLengthBy(0);
-						}
+					if (newTodoInputField === null) {
+						console.error(
+							"AddTodoForm.tsx@onBlur()",
+							"newTodoInputField is null!",
+						);
+						return;
+					}
+					if (typeof newTodoInputField.value === "undefined") {
+						console.error(
+							"AddTodoForm.tsx@onBlur()",
+							"newTodoInputField.value is undefined!",
+							newTodoInputField,
+						);
+						return;
+					}
+
+					if (newTodoInputField.value.trim().length === 0) {
+						newTodoInputField.value = "";
+						setTodoInputIsValid(true);
+						setTodoInputValueIsOverMaxLengthBy(0);
 					}
 				}}
 			/>

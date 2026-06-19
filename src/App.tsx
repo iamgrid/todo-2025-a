@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useId } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import useTodoStore from "./useTodoStore.tsx";
 
@@ -22,7 +22,7 @@ import appLogo from "./assets/todo-2025-a-logo.svg";
 
 import "./overrides.css";
 import Footer from "./components/Footer/Footer.tsx";
-import { focusDOMElementById } from "./helpers.tsx";
+import { focusDOMElementByRef } from "./helpers.tsx";
 
 const MainWrapper = styled("div")(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
@@ -32,7 +32,7 @@ const MainWrapper = styled("div")(({ theme }) => ({
 }));
 
 function App() {
-	const newTodoInputFieldId = useId();
+	const newTodoInputFieldRef = useRef<HTMLInputElement | null>(null);
 	const {
 		todoStoreTodos,
 		addTodo,
@@ -89,7 +89,7 @@ function App() {
 			if (event.key === "Enter" && event.ctrlKey) {
 				console.log(functionSignature, "Ctrl+Enter detected");
 				event.preventDefault();
-				focusDOMElementById(newTodoInputFieldId);
+				focusDOMElementByRef(newTodoInputFieldRef);
 				window.scrollTo(0, 0);
 			}
 		};
@@ -103,7 +103,7 @@ function App() {
 			);
 			window.removeEventListener("keydown", keyDownHandler);
 		};
-	}, [newTodoInputFieldId]);
+	}, [newTodoInputFieldRef]);
 
 	function handleAddTodo(newTodoText: string) {
 		addTodo(newTodoText);
@@ -187,7 +187,7 @@ function App() {
 				</Box>
 				<AddTodoForm
 					handleAddTodo={handleAddTodo}
-					newTodoInputFieldId={newTodoInputFieldId}
+					newTodoInputFieldRef={newTodoInputFieldRef}
 				/>
 				<MainWrapper>{renderTodoList()}</MainWrapper>
 				<AlertDialog

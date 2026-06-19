@@ -1,4 +1,4 @@
-import { useState, useId } from "react";
+import { useState, useId, useRef } from "react";
 import type { TTodo } from "../../useTodoStore";
 
 import ListItem from "@mui/material/ListItem";
@@ -82,7 +82,9 @@ export default function TodoListItem({
 	handleCancelEditing,
 	triggerFriendlyDateRerender,
 }: TTodoListItemProps) {
+	const editTodoInputFormRef = useRef<HTMLFormElement | null>(null);
 	const editTodoInputFormId = useId();
+	const editTodoInputFieldRef = useRef<HTMLInputElement | null>(null);
 	const editTodoInputFieldId = useId();
 	const [editTodoInputIsValid, setEditTodoInputIsValid] =
 		useState<boolean>(true);
@@ -101,9 +103,7 @@ export default function TodoListItem({
 			event.preventDefault();
 			formElement = event.currentTarget;
 		} else {
-			formElement = document.getElementById(
-				editTodoInputFormId,
-			) as HTMLFormElement;
+			formElement = editTodoInputFormRef.current;
 		}
 
 		if (!editTodoInputIsValid) {
@@ -120,15 +120,26 @@ export default function TodoListItem({
 
 		const formData = new FormData(formElement);
 
-		if (!formData.has(editTodoInputFieldId)) {
+		const editTodoInputFieldKey = formData.keys().next().value as string;
+
+		if (typeof editTodoInputFieldKey !== "string") {
 			console.error(
 				functionSignature,
-				`Form data does not have expected field ${editTodoInputFieldId}!`,
+				"Could not find edit todo input field key in form data! editTodoInputFieldKey is not a string.",
+				formData.entries(),
 			);
 			return;
 		}
 
-		const newText = (formData.get(editTodoInputFieldId) as string).trim();
+		if (!formData.has(editTodoInputFieldKey)) {
+			console.error(
+				functionSignature,
+				`Form data does not have expected field ${editTodoInputFieldKey}!`,
+			);
+			return;
+		}
+
+		const newText = (formData.get(editTodoInputFieldKey) as string).trim();
 
 		if (newText.length === 0) {
 			console.warn(
@@ -268,6 +279,7 @@ export default function TodoListItem({
 					noValidate
 					autoComplete="off"
 					id={editTodoInputFormId}
+					ref={editTodoInputFormRef}
 				>
 					<TextField
 						fullWidth
@@ -276,6 +288,7 @@ export default function TodoListItem({
 						autoFocus
 						id={editTodoInputFieldId}
 						name={editTodoInputFieldId}
+						ref={editTodoInputFieldRef}
 						slotProps={{
 							input: {
 								"aria-label": "Edit Todo",
